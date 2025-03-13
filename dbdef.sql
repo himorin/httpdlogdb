@@ -1,5 +1,7 @@
+/*
 CREATE DATABASE httpdlogdb;
 GRANT delete,insert,lock tables,select,update,drop,create,index,references,CREATE TEMPORARY TABLES, alter on httpdlogdb.* to httpdlogdb@localhost identified by 'XXX';
+*/
 
 CREATE TABLE rawlog (
   site             int UNSIGNED NOT NULL                          ,
