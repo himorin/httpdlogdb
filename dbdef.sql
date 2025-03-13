@@ -12,31 +12,31 @@ CREATE TABLE rawlog (
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE siteid (
-  site             int UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT    ,
-  sitename         text         NOT NULL                          ,
+  id               int UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT    ,
+  val              text         NOT NULL                          ,
   url              text         NOT NULL                          ,
   memo             text         NOT NULL                          
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE methodid (
-  method           tinyint UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT ,
+  id               tinyint UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT ,
   http             text         NOT NULL                          ,
   code             smallint     NOT NULL                          
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE dirid (
-  dir              int UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT    ,
-  name             text         NOT NULL                          
+  id               int UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT    ,
+  val              text         NOT NULL                          
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE referid (
-  refer            int UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT    ,
-  url              text         NOT NULL                          
+  id               int UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT    ,
+  val              text         NOT NULL                          
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE browserid (
-  browser          int UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT    ,
-  brstring         text         NOT NULL                          
+  id               int UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT    ,
+  val              text         NOT NULL                          
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE ana_page (
@@ -60,5 +60,10 @@ CREATE TABLE ana_pagebr (
   dir              int UNSIGNED NOT NULL                          ,
   browser          int UNSIGNED NOT NULL                          ,
   value            int UNSIGNED NOT NULL                          
+) DEFAULT CHARSET=utf8;
+
+CREATE TABLE log_error (
+  site             int UNSIGNED NOT NULL                          ,
+  logline          text         NOT NULL                          
 ) DEFAULT CHARSET=utf8;
 

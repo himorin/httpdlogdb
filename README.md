@@ -23,3 +23,11 @@ See [dbdef.sql](dbdef.sql) for SQL.
 To save size, all string based values are stored by reference ID, 
 for all of accessed page, referrer, and browser ID.
 
+## System design
+
+- `LogBase`
+  - `__init__(c_db)`: `c_db` as object instance of database
+  - `ParseFile(fname)`: `fname` as target filename, parse all lines with `ParseLine` and register all into database
+  - `ParseLine(line)`: will be inherited by child class, `line` as one line and returns hash of line contents, called by `ParseFile`
+- `LogApache`: implementation of `LogBase` for Apache combined log
+
