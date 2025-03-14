@@ -105,9 +105,42 @@ class SaveDB:
     cursor.close()
     return self.cid_method[cid]
 
+  def AddLogRaw(self, site, atime, method, dir, query, refer, browser):
+    cursor = self._get_new_cursor()
+    cursor.execute('INSERT INTO rawlog (site, atime, method, dir, query, refer, browser) VALUES (%s, %s, %s, %s, %s, %s, %s)', [site, atime, method, dir, query, refer, browser])
+
+  def AddLogError(self, site, line):
+    cursor = self._get_new_cursor()
+    cursor.execute('INSERT INTO log_error (site, logline) VALUES (%s, %s)', [site, line])
+
+  def AddAnaPage(self, site, date, dir):
+    cursor = self._get_new_cursor()
+    cursor.execute('SELECT * FROM ana_page WHERE site = %s AND target = %s and dir = %s', [site, date, dir])
+    dat = cursor.fetchall()
+    if len(dat) == 0:
+      cursor.execute('INSERT INTO ana_page (site, target, dir, value) VALUES (%s, %s, %s, 1)', [site, date, dir])
+    else:
+      cursor.execute('UPDATE ana_page SET value = value + 1 WHERE site = %s AND target = %s AND dir = %s', [site, date, dir])
+    self.cnx.commit()
+
+  def AddAnaRef(self, site, date, dir, refer):
+    cursor = self._get_new_cursor()
+    cursor.execute('SELECT * FROM ana_ref WHERE site = %s AND target = %s and dir = %s AND refer = %s', [site, date, dir, refer])
+    dat = cursor.fetchall()
+    if len(dat) == 0:
+      cursor.execute('INSERT INTO ana_ref (site, target, dir, refer, value) VALUES (%s, %s, %s, %s, 1)', [site, date, dir, refer])
+    else:
+      cursor.execute('UPDATE ana_ref SET value = value + 1 WHERE site = %s AND target = %s AND dir = %s AND refer = %s', [site, date, dir, refer])
+    self.cnx.commit()
+
+  def AddAnaBrowser(self, site, date, dir, browser):
+    cursor = self._get_new_cursor()
+    cursor.execute('SELECT * FROM ana_pagebr WHERE site = %s AND target = %s and dir = %s AND browser = %s', [site, date, dir, browser])
+    dat = cursor.fetchall()
+    if len(dat) == 0:
+      cursor.execute('INSERT INTO ana_pagebr (site, target, dir, browser, value) VALUES (%s, %s, %s, %s, 1)', [site, date, dir, browser])
+    else:
+      cursor.execute('UPDATE ana_pagebr SET value = value + 1 WHERE site = %s AND target = %s AND dir = %s AND browser = %s', [site, date, dir, browser])
+    self.cnx.commit()
 
 
-
-  def Dump(self):
-    print(self.cid_dir)
-    print(self.cid_refer)

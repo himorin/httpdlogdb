@@ -11,7 +11,7 @@ class LogApache(LogBase):
 
   def __init__(self, c_db):
     super().__init__(c_db)
-    self.o_re = re.compile(r'([0-9\.:]+) - ([^ ]+) \[([0-9a-zA-Z \/:\-\+]+)\] "([^ ]+) (.+) ([^ ]+)" ([0-9]+) ([0-9]+) "(.+)" "(.+)"')
+    self.o_re = re.compile(r'([0-9\.:]+) - ([^ ]+) \[([0-9a-zA-Z \/:\-\+]+)\] "([^ ]+) (.+) ([^ ]+)" ([0-9]+) ([0-9]+) "(.*)" "(.+)"')
 
   def ParseLine(self, line):
     c_ret = {}
