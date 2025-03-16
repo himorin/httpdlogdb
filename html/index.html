@@ -39,8 +39,8 @@ function show_page_page(res) {
   })
   document.getElementById('searchres').innerHTML = ch;
 }
-function show_pageday_date(date) { get_data('site=' + site + '&target=page&date=' + date, show_page_date); }
-function show_pagename_name(name) { get_data('site=' + site + '&target=page&page=' + name, show_page_page); }
+function show_pageday_date(date) { get_data('site=' + document.getElementById('target_site').value + '&target=page&date=' + date, show_page_date); }
+function show_pagename_name(name) { get_data('site=' + document.getElementById('target_site').value + '&target=page&page=' + name, show_page_page); }
 function exec_query() {
   let sel = document.getElementById('target_set').elements['condition'].value;
   let site = document.getElementById('target_site').value;
