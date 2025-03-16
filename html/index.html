@@ -52,6 +52,7 @@ window.addEventListener('load', () => {
     else { throw Error('failed to fetch site list'); }
   }).then((res) => {
     site_tz = res['log_tz'];
+    document.getElementById('logtz').innerText = site_tz;
     site_list = res['sites'].sort();
     let elem = document.getElementById('target_site');
     site_list.forEach((item) => {
