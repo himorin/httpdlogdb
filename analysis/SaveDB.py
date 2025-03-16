@@ -14,6 +14,11 @@ class SaveDB:
   cid_refer = {}
   cid_browser = {}
 
+  # place holder for ana
+  ana_page = {}
+  ana_ref = {}
+  ana_browser = {}
+
   def Connect(self, conf):
     db_dsn = {
       'user': conf['db_user'],
@@ -114,33 +119,63 @@ class SaveDB:
     cursor.execute('INSERT INTO log_error (site, logline) VALUES (%s, %s)', [site, line])
 
   def AddAnaPage(self, site, date, dir):
-    cursor = self._get_new_cursor()
-    cursor.execute('SELECT * FROM ana_page WHERE site = %s AND target = %s and dir = %s', [site, date, dir])
-    dat = cursor.fetchall()
-    if len(dat) == 0:
-      cursor.execute('INSERT INTO ana_page (site, target, dir, value) VALUES (%s, %s, %s, 1)', [site, date, dir])
+    cid = "{}_{}_{}".format(site, date, dir)
+    if cid in self.ana_page.keys():
+      self.ana_page[cid] += 1
     else:
-      cursor.execute('UPDATE ana_page SET value = value + 1 WHERE site = %s AND target = %s AND dir = %s', [site, date, dir])
-    self.cnx.commit()
+      self.ana_page[cid] = 1
 
   def AddAnaRef(self, site, date, dir, refer):
-    cursor = self._get_new_cursor()
-    cursor.execute('SELECT * FROM ana_ref WHERE site = %s AND target = %s and dir = %s AND refer = %s', [site, date, dir, refer])
-    dat = cursor.fetchall()
-    if len(dat) == 0:
-      cursor.execute('INSERT INTO ana_ref (site, target, dir, refer, value) VALUES (%s, %s, %s, %s, 1)', [site, date, dir, refer])
+    cid = "{}_{}_{}_{}".format(site, date, dir, refer)
+    if cid in self.ana_ref.keys():
+      self.ana_ref[cid] += 1
     else:
-      cursor.execute('UPDATE ana_ref SET value = value + 1 WHERE site = %s AND target = %s AND dir = %s AND refer = %s', [site, date, dir, refer])
-    self.cnx.commit()
+      self.ana_ref[cid] = 1
 
   def AddAnaBrowser(self, site, date, dir, browser):
-    cursor = self._get_new_cursor()
-    cursor.execute('SELECT * FROM ana_pagebr WHERE site = %s AND target = %s and dir = %s AND browser = %s', [site, date, dir, browser])
-    dat = cursor.fetchall()
-    if len(dat) == 0:
-      cursor.execute('INSERT INTO ana_pagebr (site, target, dir, browser, value) VALUES (%s, %s, %s, %s, 1)', [site, date, dir, browser])
+    cid = "{}_{}_{}_{}".format(site, date, dir, browser)
+    if cid in self.ana_browser.keys():
+      self.ana_browser[cid] += 1
     else:
-      cursor.execute('UPDATE ana_pagebr SET value = value + 1 WHERE site = %s AND target = %s AND dir = %s AND browser = %s', [site, date, dir, browser])
+      self.ana_browser[cid] = 1
+
+  def AnaCommit(self):
+    cursor = self._get_new_cursor()
+    # ana_page
+    for cid in self.ana_page.keys():
+      cids = cid.split('_')
+      cursor.execute('SELECT * FROM ana_page WHERE site = %s AND target = %s and dir = %s', [cids[0], cids[1], cids[2]])
+      dat = cursor.fetchall()
+      if len(dat) == 0:
+        cursor.execute('INSERT INTO ana_page (site, target, dir, value) VALUES (%s, %s, %s, %s)', [cids[0], cids[1], cids[2], self.ana_page[cid]])
+      else:
+        cursor.execute('UPDATE ana_page SET value = value + %s WHERE site = %s AND target = %s AND dir = %s', [self.ana_page[cid], cids[0], cids[1], cids[2]])
     self.cnx.commit()
 
+    # ana_ref
+    for cid in self.ana_ref.keys():
+      cids = cid.split('_')
+      cursor.execute('SELECT * FROM ana_ref WHERE site = %s AND target = %s and dir = %s AND refer = %s', [cids[0], cids[1], cids[2], cids[3]])
+      dat = cursor.fetchall()
+      if len(dat) == 0:
+        cursor.execute('INSERT INTO ana_ref (site, target, dir, refer, value) VALUES (%s, %s, %s, %s, %s)', [cids[0], cids[1], cids[2], cids[3], self.ana_ref[cid]])
+      else:
+        cursor.execute('UPDATE ana_ref SET value = value + %s WHERE site = %s AND target = %s AND dir = %s AND refer = %s', [self.ana_ref[cid], cids[0], cids[1], cids[2], cids[3]])
+    self.cnx.commit()
+
+    # ana_browser
+    for cid in self.ana_browser.keys():
+      cids = cid.split('_')
+      cursor.execute('SELECT * FROM ana_pagebr WHERE site = %s AND target = %s and dir = %s AND browser = %s', [cids[0], cids[1], cids[2], cids[3]])
+      dat = cursor.fetchall()
+      if len(dat) == 0:
+        cursor.execute('INSERT INTO ana_pagebr (site, target, dir, browser, value) VALUES (%s, %s, %s, %s, %s)', [cids[0], cids[1], cids[2], cids[3], self.ana_browser[cid]])
+      else:
+        cursor.execute('UPDATE ana_pagebr SET value = value + %s WHERE site = %s AND target = %s AND dir = %s AND browser = %s', [self.ana_browser[cid], cids[0], cids[1], cids[2], cids[3]])
+    self.cnx.commit()
+
+    # cleanup
+    self.ana_page = {}
+    self.ana_ref = {}
+    self.ana_browser = {}
 

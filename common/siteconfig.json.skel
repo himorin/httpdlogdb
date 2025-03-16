@@ -4,5 +4,7 @@
   "db_host": "",
   "db_name": "",
   "db_port": "",
-  "log_tz": ""
+  "log_tz": "",
+  "log_fname": "",
+  "loghead": ""
 }

@@ -37,6 +37,7 @@ class LogBase:
         self.obj_db.AddAnaBrowser(siteid, atime_log, cid_dir, cid_ua)
       else:
         self.obj_db.AddLogError(siteid, fline)
+    self.obj_db.AnaCommit()
 
   def ParseLine(self, ctxt):
     return {}
