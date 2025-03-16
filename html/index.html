@@ -35,7 +35,7 @@ function show_page_date(res) {
 function show_page_page(res) {
   let ch = '';
   Object.keys(res['count']).sort().reverse().forEach((item) => {
-    ch += '<li class="click" onclick="show_page_date(\'' + item + '\')">' + item + ': ' + res['count'][item] + '</li>';
+    ch += '<li><span class="click" onclick="show_pageday_date(\'' + item + '\')">' + item + '</span>: ' + res['count'][item] + '</li>';
   })
   document.getElementById('searchres').innerHTML = ch;
 }
