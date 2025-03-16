@@ -22,7 +22,7 @@ function get_data(query, callback) {
 }
 function show_page_date(res) {
   let ch = '';
-  Object.keys(res['count']).sort((a,b) => {return res['count'][a] - res['count'][b]; }).forEach((item) => {
+  Object.keys(res['count']).sort((a,b) => {return res['count'][b] - res['count'][a]; }).forEach((item) => {
     ch += '<li>' + res['count'][item] + ': <tt>' + item + '</tt></li>';
   })
   document.getElementById('searchres').innerHTML = ch;
@@ -100,6 +100,8 @@ window.addEventListener('load', () => {
   <li>ターゲットサイト: <span id="sres_site"></span></li>
   <li>検索条件: <span id="sres_cond"></span></li>
 </ul>
+<h3>結果リスト</h3>
+<p>表示ボタンを押しても以下に何も表示されないもしくは更新されない場合は検索設定に誤りがある可能性があります</p>
 <ul id="searchres"></ul>
 </body>
 </htad>
