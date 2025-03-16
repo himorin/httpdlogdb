@@ -3,6 +3,11 @@
 <htad>
   <meta charset="utf-8">
   <title>HTTPD log database</title>
+  <style>
+<!--
+  .click { text-decoration: underline; }
+-->
+  </style>
   <script>
 <!--
 const api_site = 'api/site.cgi';
@@ -23,17 +28,19 @@ function get_data(query, callback) {
 function show_page_date(res) {
   let ch = '';
   Object.keys(res['count']).sort((a,b) => {return res['count'][b] - res['count'][a]; }).forEach((item) => {
-    ch += '<li>' + res['count'][item] + ': <tt>' + item + '</tt></li>';
+    ch += '<li>' + res['count'][item] + ': <tt class="click" onclick="show_pagename_name(\'' + item + '\')">' + item + '</tt></li>';
   })
   document.getElementById('searchres').innerHTML = ch;
 }
 function show_page_page(res) {
   let ch = '';
   Object.keys(res['count']).sort().reverse().forEach((item) => {
-    ch += '<li>' + item + ': ' + res['count'][item] + '</li>';
+    ch += '<li class="click" onclick="show_page_date(\'' + item + '\')">' + item + ': ' + res['count'][item] + '</li>';
   })
   document.getElementById('searchres').innerHTML = ch;
 }
+function show_pageday_date(date) { get_data('site=' + site + '&target=page&date=' + date, show_page_date); }
+function show_pagename_name(name) { get_data('site=' + site + '&target=page&page=' + name, show_page_page); }
 function exec_query() {
   let sel = document.getElementById('target_set').elements['condition'].value;
   let site = document.getElementById('target_site').value;
@@ -85,12 +92,18 @@ window.addEventListener('load', () => {
   <fieldset>
     <legend>詳細検索設定</legend>
     <ul>
-      <li><input type="radio" name="condition" id="cond_pageday" value="pageday"><label for="pageday">日付指定でのページアクセス数リスト</label> <input type="text" id="cond_pageday_date" placeholder="2025-03-05" inputmode="decimal"> ("年-月-日"の形式です)</li>
-      <li><input type="radio" name="condition" id="cond_pagename" value="pagename"><label for="pagename">ページ名指定での日別アクセス数リスト</label> <input type="text" id="cond_pagename_name" placeholder="/"> (一つ上からの検索結果のページ一覧からも選択可能です)</li>
-      <li><input type="radio" name="condition" id="cond_refday" value="refday" disabled><label for="refday">日付指定でのリンク元リスト</label></li>
-      <li><input type="radio" name="condition" id="cond_refpday" value="refpday" disabled><label for="refpday">日付とページ名指定でのリンク元リスト</label></li>
-      <li><input type="radio" name="condition" id="cond_uaday" value="uaday" disabled><label for="uaday">日付ごとのアクセスに利用されたブラウザリスト</label></li>
-      <li><input type="radio" name="condition" id="cond_uapday" value="uapday" disabled><label for="uapday">日付とページ名指定でのアクセスに利用されたブラウザリスト</label></li>
+      <li>アクセス数<ul>
+        <li><input type="radio" name="condition" id="cond_pageday" value="pageday"><label for="pageday">日付指定でのページアクセス数リスト</label> <input type="text" id="cond_pageday_date" placeholder="2025-03-05" inputmode="decimal"> ("年-月-日"の形式です)</li>
+        <li><input type="radio" name="condition" id="cond_pagename" value="pagename"><label for="pagename">ページ名指定での日別アクセス数リスト</label> <input type="text" id="cond_pagename_name" placeholder="/"> (一つ上からの検索結果のページ一覧からも選択可能です)</li>
+      </ul></li>
+      <li>リンク元リスト<ul>
+        <li><input type="radio" name="condition" id="cond_refday" value="refday" disabled><label for="refday">日付指定でのリンク元リスト</label></li>
+        <li><input type="radio" name="condition" id="cond_refpday" value="refpday" disabled><label for="refpday">日付とページ名指定でのリンク元リスト</label></li>
+      </ul></li>
+      <li>ブラウザリスト<ul>
+        <li><input type="radio" name="condition" id="cond_uaday" value="uaday" disabled><label for="uaday">日付ごとのアクセスに利用されたブラウザリスト</label></li>
+        <li><input type="radio" name="condition" id="cond_uapday" value="uapday" disabled><label for="uapday">日付とページ名指定でのアクセスに利用されたブラウザリスト</label></li>
+      </ul></li>
     </ul>
   </fieldset>
   <input type="button" value="表示" id="cond_exec">
@@ -102,7 +115,10 @@ window.addEventListener('load', () => {
   <li>検索条件: <span id="sres_cond"></span></li>
 </ul>
 <h3>結果リスト</h3>
-<p>表示ボタンを押しても以下に何も表示されないもしくは更新されない場合は検索設定に誤りがある可能性があります</p>
+<p>
+  表示ボタンを押しても以下に何も表示されないもしくは更新されない場合は検索設定に誤りがある可能性があります。<br>
+  結果表示内の下線付き部分をクリックした場合、日付については日付指定でのページアクセス数リスト、ページ名についてはページ名指定での日別アクセス数リストに遷移します。
+</p>
 <ul id="searchres"></ul>
 </body>
 </htad>
