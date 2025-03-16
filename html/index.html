@@ -37,8 +37,8 @@ function show_page_page(res) {
 function exec_query() {
   let sel = document.getElementById('target_set').elements['condition'].value;
   let site = document.getElementById('target_site').value;
-  if (sel == 'pageday') { get_data('site=' + site + '&target=page&date=' + sel, show_page_date); }
-  else if (sel == 'pagename') { get_data('site=' + site + '&target=page&page=' + sel, show_page_page); }
+  if (sel == 'pageday') { get_data('site=' + site + '&target=page&date=' + document.getElementById('cond_pageday_date').value, show_page_date); }
+  else if (sel == 'pagename') { get_data('site=' + site + '&target=page&page=' + document.getElementById('cond_pagename_name').value, show_page_page); }
   else if (sel == 'refday') { }
   else if (sel == 'refpday') { }
   else if (sel == 'uaday') { }
