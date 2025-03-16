@@ -3,6 +3,47 @@
 <htad>
   <meta charset="utf-8">
   <title>HTTPD log database</title>
+  <script>
+<!--
+const api_site = 'api/site.cgi';
+const api_get = 'api/get.cgi';
+let site_list = [];
+let site_tz = '';
+window.addEventListener('load', () => {
+  fetch(api_site)
+  .then((res) => {
+    if (res.ok) { return res.json(); }
+    else { throw Error('failed to fetch site list'); }
+  }).then((res) => {
+    site_tz = res['log_tz'];
+    site_list = res['sites'].sort();
+    let elem = document.getElementById('target_site');
+    site_list.forEach((item) => {
+      let ch = '<option value="' + item + '">' + item + '</option>';
+      elem.innerHTML += ch;
+    });
+  }).catch((e) => {
+    // anything?
+  })
+})
+-->
+  </script>
 </head>
 <body>
+<div id="showlog">
+<h1>ウェブサーバログ解析結果表示</h1>
+<p>
+  このページでは、このサーバに載っているウェブサーバのアクセス解析を提供しています。
+  <br>
+  サイトごとのアクセス制限は未実装です。
+  <br>
+  動的解析は未実装です。
+</p>
+<h2>パラメータ設定</h2>
+<div>
+  <label for="target_site">ターゲットサイト:</label>
+  <select id="target_site"></select>
+</div>
+</div>
 </body>
+</htad>
