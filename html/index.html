@@ -23,7 +23,7 @@ function get_data(query, callback) {
 function show_page_date(res) {
   let ch = '';
   Object.keys(res['count']).sort((a,b) => {return res['count'][a] - res['count'][b]; }).forEach((item) => {
-    ch += '<li>'res['count'][item] + ': <tt>' + item + '</tt></li>';
+    ch += '<li>' + res['count'][item] + ': <tt>' + item + '</tt></li>';
   })
   document.getElementById('searchres').innerHTML = ch;
 }
