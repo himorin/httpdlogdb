@@ -31,3 +31,10 @@ for all of accessed page, referrer, and browser ID.
   - `ParseLine(line)`: will be inherited by child class, `line` as one line and returns hash of line contents, called by `ParseFile`
 - `LogApache`: implementation of `LogBase` for Apache combined log
 
+## analysis commands
+
+Several log loading commands are provided. (For now, only Apache 'combined' type log line is supported)
+
+- `parse_daily.py`: analyze log files (siteconfig `log_fname`) in directories listed in configuration (`common/sitelist.json`), to be used as cron
+- `parse_init.py`: analyze log files all matching to siteconfig `loghead` in directories listed in configuration (`common.sitelist.json`), to be used for bulk init
+- `parse_file.py`: `parse_file.py <log-file-name> <sitename>`
