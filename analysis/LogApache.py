@@ -8,16 +8,22 @@ from LogBase import LogBase
 
 class LogApache(LogBase):
   o_re = None
+  o_re_attack = None
 
   def __init__(self, c_db):
     super().__init__(c_db)
     self.o_re = re.compile(r'([0-9a-f\.:]+) - ([^ ]+) \[([0-9a-zA-Z \/:\-\+]+)\] "([^ ]+) (.+) ([^ ]+)" ([0-9]+) ([0-9]+) "(.*)" "(.+)"')
+    self.o_re_attack = re.compile(r'([0-9a-f\.:]+) - ([^ ]+) \[([0-9a-zA-Z \/:\-\+]+)\] "([^ ]+)" ([0-9]+) ([0-9]+) "(.*)" "(.+)"')
 
   def ParseLine(self, line):
     c_ret = {}
     c_match = self.o_re.match(line, 0)
     if c_match == None:
-      return None
+      c_match = self.o_re_attack.match(line, 0)
+      if c_match == None:
+        return None
+      else:
+        c_ret['error'] = c_match.groups()[3]
     c_arr = c_match.groups()
     c_ret['ip'] = c_arr[0]
     if c_arr[1] == '-':
