@@ -24,6 +24,7 @@ class LogApache(LogBase):
         return None
       else:
         c_ret['error'] = c_match.groups()[3]
+        return c_ret
     c_arr = c_match.groups()
     c_ret['ip'] = c_arr[0]
     if c_arr[1] == '-':
