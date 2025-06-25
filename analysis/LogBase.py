@@ -25,9 +25,8 @@ class LogBase:
     for fline in f:
       c_lh = self.ParseLine(fline)
       if c_lh != None:
-        if 'error' in c_lh:
-          # just ignore?
-        else:
+        if 'error' not in c_lh:
+          # if error exists, just ignore?
           cid_method = self.obj_db.GetIDMethod(c_lh['method'], c_lh['code'])
           cid_dir = self.obj_db.GetIDDir(c_lh['path'])
           cid_refer = self.obj_db.GetIDRefer(c_lh['refer'])
