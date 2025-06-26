@@ -37,6 +37,21 @@ class LogBase:
           self.obj_db.AddAnaPage(siteid, atime_log, cid_dir)
           self.obj_db.AddAnaRef(siteid, atime_log, cid_dir, cid_refer)
           self.obj_db.AddAnaBrowser(siteid, atime_log, cid_dir, cid_ua)
+        else:
+          # c_lh['error'] contains query, usually GET to HTTP/*
+          c_hd = c_lh['error'] # shorthand
+          c_hd_idx = c_hd.index(' ')
+          if c_hd == '':
+            pass # nothing supplied
+          elif c_hd_idx < 0:
+            pass # no white space, should be attack
+          elif c_hd.index(' ', c_hd_idx + 1) < 0:
+            pass # only one spacing, should be attack
+          elif c_hd[0] == '{' and c_hd[-1] == '}':
+            pass # json data attack
+          else:
+            # could be normal one, register to log_error
+            self.obj_db.AddLogError(siteid, fline)
       else:
         self.obj_db.AddLogError(siteid, fline)
     self.obj_db.AnaCommit()
