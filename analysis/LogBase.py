@@ -40,18 +40,18 @@ class LogBase:
         else:
           # c_lh['error'] contains query, usually GET to HTTP/*
           c_hd = c_lh['error'] # shorthand
-          c_hd_idx = c_hd.index(' ')
-          if c_hd == '':
+          if c_hd == '' or c_hd == '-':
             pass # nothing supplied
-          elif c_hd_idx < 0:
-            pass # no white space, should be attack
-          elif c_hd.index(' ', c_hd_idx + 1) < 0:
-            pass # only one spacing, should be attack
           elif c_hd[0] == '{' and c_hd[-1] == '}':
             pass # json data attack
           else:
-            # could be normal one, register to log_error
-            self.obj_db.AddLogError(siteid, fline)
+            try: # for catching .index error
+              c_hd_idx = c_hd.index(' ')
+              if c_hd_idx > -1 and c_hd.index(' ', c_hd_idx + 1) > -1:
+                # could be normal one, register to log_error
+                self.obj_db.AddLogError(siteid, fline)
+            except Exception as e:
+              pass # no or one white space, should be attack
       else:
         self.obj_db.AddLogError(siteid, fline)
     self.obj_db.AnaCommit()
