@@ -61,6 +61,8 @@ function exec_query() {
 }
 window.addEventListener('load', () => {
   document.getElementById('cond_exec').addEventListener('click', exec_query);
+  document.getElementById('cond_pageday_date').addEventListener('change', () => { document.getElementById('cond_pageday').checked = true; });
+  document.getElementById('cond_pagename_name').addEventListener('change', () => { document.getElementById('cond_pagename').checked = true; });
   fetch(api_site)
   .then((res) => {
     if (res.ok) { return res.json(); }
@@ -101,12 +103,13 @@ window.addEventListener('load', () => {
     <legend>詳細検索設定</legend>
     <ul>
       <li>アクセス数<ul>
-        <li><input type="radio" name="condition" id="cond_pageday" value="pageday"><label for="cond_pageday">日付指定でのページアクセス数リスト</label> <input type="text" id="cond_pageday_date" placeholder="YYYY-MM-DD" inputmode="decimal"> ("年-月-日"の形式です)</li>
-        <li><input type="radio" name="condition" id="cond_pagename" value="pagename"><label for="cond_pagename">ページ名指定での日別アクセス数リスト</label> <input type="text" id="cond_pagename_name" placeholder="/" size="50"> (日付指定での検索結果のページ一覧からも選択可能です)</li>
+        <li><input type="radio" name="condition" id="cond_pageday" value="pageday"><label for="cond_pageday">日付指定でのページアクセス数リスト</label>: <input type="text" id="cond_pageday_date" placeholder="YYYY-MM-DD" inputmode="decimal"> ("年-月-日"の形式です)</li>
+        <li><input type="radio" name="condition" id="cond_pagename" value="pagename"><label for="cond_pagename">ページ名指定での日別アクセス数リスト</label>: <input type="text" id="cond_pagename_name" placeholder="/" size="50"> (日付指定での検索結果のページ一覧からも選択可能です)</li>
       </ul></li>
       <li>リンク元リスト<ul>
         <li><input type="radio" name="condition" id="cond_refday" value="refday" disabled><label for="cond_refday">日付指定でのリンク元リスト</label></li>
         <li><input type="radio" name="condition" id="cond_refpday" value="refpday" disabled><label for="cond_refpday">日付とページ名指定でのリンク元リスト</label></li>
+        <li><input type="radio" name="condition" id="cond_refpage" value="refpage" disabled><label for="cond_refpage">ページ名指定でのリンク元リスト</label></li>
       </ul></li>
       <li>ブラウザリスト<ul>
         <li><input type="radio" name="condition" id="cond_uaday" value="uaday" disabled><label for="cond_uaday">日付ごとのアクセスに利用されたブラウザリスト</label></li>
