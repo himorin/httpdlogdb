@@ -47,7 +47,7 @@ if ($c_tgt eq 'sns_fb') {
   $sth->execute(@params);
   $ret->{'count'} = {};
   while (my $cur = $sth->fetchrow_hashref()) {
-    my $dat = { "sum": $cur->{'sum'}, "page": $cur->{'val'} };
+    my $dat = { "sum" => $cur->{'sum'}, "page" => $cur->{'val'} };
     $ret->{'count'}->{$cur->{'query'}} = $dat;
   }
 } elsif ($c_tgt eq 'sns_x') {
