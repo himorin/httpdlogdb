@@ -39,20 +39,20 @@ if ($c_tgt eq 'page') {
     $ret->{'analysis'} = 'date';
     $ret->{'dst'} = $c_dst;
     $ret->{'ded'} = $c_ded;
-    $sth = $dbh->prepare('SELECT * FROM ana_page INNER JOIN dirid ON ana_page.dir = dirid.id AND ana_page.site = ? AND ana_page.target >= ? AND ana_page.target <= ? ORDER BY value DESC');
+    $sth = $dbh->prepare('SELECT SUM(ana_page.value) AS sum, dirid.val FROM ana_page INNER JOIN dirid ON ana_page.dir = dirid.id AND ana_page.site = ? AND ana_page.target >= ? AND ana_page.target <= ? GROUP BY dirid.val ORDER BY sum DESC');
     $sth->execute($c_sid, $c_dst, $c_ded);
     $ret->{'count'} = {};
     while (my $cur = $sth->fetchrow_hashref()) {
-      $ret->{'count'}->{$cur->{'val'}} = $cur->{'value'};
+      $ret->{'count'}->{$cur->{'val'}} = $cur->{'sum'};
     }
   } elsif (defined($c_page)) {
     $ret->{'analysis'} = 'page';
     $ret->{'page'} = $c_page;
-    $sth = $dbh->prepare('SELECT * FROM ana_page INNER JOIN dirid ON ana_page.dir = dirid.id AND dirid.val = ? AND ana_page.site = ? ORDER BY ana_page.target DESC');
+    $sth = $dbh->prepare('SELECT SUM(ana_page.value) AS sum, ana_page.target FROM ana_page INNER JOIN dirid ON ana_page.dir = dirid.id AND dirid.val = ? AND ana_page.site = ? GROUP BY ana_page.target ORDER BY ana_page.target DESC');
     $sth->execute($c_page, $c_sid);
     $ret->{'count'} = {};
     while (my $cur = $sth->fetchrow_hashref()) {
-      $ret->{'count'}->{$cur->{'target'}} = $cur->{'value'};
+      $ret->{'count'}->{$cur->{'target'}} = $cur->{'sum'};
     }
   } else {
     $obj_cgi->send_error(400, 'parameter error page');
