@@ -16,14 +16,18 @@ const api_ana = 'api/ana.cgi';
 let site_list = [];
 let site_tz = '';
 function get_data(api, query, callback) {
+  document.getElementById('sres_fetch').style.display = 'block';
+  document.getElementById('sres_fetch_fin').style.display = 'none';
+  document.getElementById('sres_fetch_err').style.display = 'none';
   fetch(api + '?' + query)
   .then((res) => {
     if (res.ok) { return res.json(); }
     else { throw Error('failed to fetch data'); }
   }).then((res) => {
+    document.getElementById('sres_fetch_fin').style.display = 'inline';
     callback(res);
   }).catch((e) => {
-    // anything?
+    document.getElementById('sres_fetch_err').style.display = 'inline';
   });
 }
 function show_access(res) {
@@ -225,6 +229,11 @@ window.addEventListener('load', () => {
   <li>ページ指定: <span id="sres_page" style="display: none;"></span><span id="sres_page_none">ページ未指定</span></li>
 </ul>
 <h3>結果リスト</h3>
+<p id="sres_fetch" style="display: none">
+  サーバからデータの取得中です
+  <span id="sres_fetch_fin" style="display: none"> ... 完了しました</span>
+  <span id="sres_fetch_err" style="display: none"> ... サーバからのデータ取得でエラーが発生しました</span>
+</p>
 <p>
   表示ボタンを押しても以下に何も表示されないもしくは更新されない場合は検索設定に誤りがある可能性があります。
 </p>
