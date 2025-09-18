@@ -110,7 +110,22 @@ function show_graph() {
   document.getElementById('sres_graph_svg_min').textContent = '0';
   document.getElementById('sres_graph_svg_start').textContent = dts[dts.length - 1];
   document.getElementById('sres_graph_svg_end').textContent = dts[0];
-  document.getElementById('sres_graph_svg_pl1').setAttribute('points', '');
+  const dst = new Date(dts[dts.length - 1]);
+  let dtmp = new Date(dts[0]);
+  const dw = (dtmp - dst) / 86400000;
+  const bbtm = 225;
+  const bhgt = 220;
+  const bst = document.getElementById('sres_graph_svg').clientWidth / 90 * 5;
+  const bwd = document.getElementById('sres_graph_svg').clientWidth / 90 * 80;
+
+  let pts = '';
+  dts.forEach((dt) => {
+    dtmp = new Date(dt);
+    let curx = (dtmp - dst) / 86400000 / dw * bwd + bst;
+    let cury = bbtm - (last_res['count'][dt] / maxcnt * bhgt);
+    pts += curx + ',' + cury + ' ';
+  })
+  document.getElementById('sres_graph_svg_pl1').setAttribute('points', pts);
 }
 function exec_query() {
   let sel = document.getElementById('target_set').elements['condition'].value;
