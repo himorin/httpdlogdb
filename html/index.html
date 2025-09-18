@@ -98,6 +98,11 @@ function show_ana_page(res) {
   document.getElementById('searchres').innerHTML = ch;
 }
 function show_graph() {
+  if (!document.getElementById('sres_graph_chk').checked) {
+    document.getElementById('sres_graph_svg').style.display = 'none';
+    return;
+  }
+  document.getElementById('sres_graph_svg').style.display = 'block';
 }
 function exec_query() {
   let sel = document.getElementById('target_set').elements['condition'].value;
