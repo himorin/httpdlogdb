@@ -48,7 +48,7 @@ function show_access(res) {
 }
 function show_page(res) {
   let ch = '';
-  Object.keys(res['count']).sort().forEach((item) => {
+  Object.keys(res['count']).sort().reverse().forEach((item) => {
     ch += '<li><tt>' + item + '</tt>: ' + res['count'][item] + '</li>';
   })
   document.getElementById('searchres').innerHTML = ch;
