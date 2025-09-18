@@ -106,10 +106,10 @@ function show_graph() {
   let dts = Object.keys(last_res['count']).sort().reverse();
   let maxcnt = 0;
   dts.forEach((dt) => { if (last_res['count'][dt] > maxcnt) { maxcnt = last_res['count'][dt]; } });
-  document.getElementById('sres_graph_svg_max').innerText = maxcnt;
-  document.getElementById('sres_graph_svg_min').innerText = '0';
-  document.getElementById('sres_graph_svg_start').innerText = dts[dts.length - 1];
-  document.getElementById('sres_graph_svg_end').innerText = dts[0];
+  document.getElementById('sres_graph_svg_max').textContent = maxcnt;
+  document.getElementById('sres_graph_svg_min').textContent = '0';
+  document.getElementById('sres_graph_svg_start').textContent = dts[dts.length - 1];
+  document.getElementById('sres_graph_svg_end').textContent = dts[0];
   document.getElementById('sres_graph_svg_pl1').setAttribute('points', '');
 }
 function exec_query() {
