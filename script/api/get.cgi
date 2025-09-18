@@ -56,6 +56,43 @@ if ($c_tgt eq 'page') {
     $obj_cgi->send_error(400, 'parameter error');
     exit;
   }
+} elsif ($c_tgt eq 'ref') {
+  my %c_date = $obj_cgi->param('date');
+  my $c_page = $obj_cgi->param('page');
+  $ret->{'site'} = $c_site;
+  $ret->{'target'} = $c_tgt;
+  if (defined($c_date) && defined($c_page)) {
+    $ret->{'analysis'} = 'date_page';
+    $ret->{'date'} = $c_date;
+    $ret->{'page'} = $c_page;
+    $sth = $dbh->prepare('SELECT SUM(ana_ref.value) AS sum, referid.val FROM ana_ref INNER JOIN dirid ON ana_ref.dir = dirid.id AND ana_ref.site = ? AND ana_ref.target = ? INNER JOIN referid ON ana_ref.refer = referid.id WHERE referid.val != '-' AND dirid.val = ? GROUP BY ana_ref.refer ORDER BY SUM(ana_ref.value) DESC');
+    $sth->execute($c_site, $c_date, $c_page);
+    $ret->{'count'} = {};
+    while (my $cur = $sth->fetchrow_hashref()) {
+      $ret->{'count'}->{$cur->{'val'}} = $cur->{'sum'}; 
+    }
+  } elsif (defined($c_date)) {
+    $ret->{'analysis'} = 'date';
+    $ret->{'date'} = $c_date;
+    $sth = $dbh->prepare('SELECT SUM(ana_ref.value) AS sum, referid.val FROM ana_ref INNER JOIN dirid ON ana_ref.dir = dirid.id AND ana_ref.site = ? AND ana_ref.target = ? INNER JOIN referid ON ana_ref.refer = referid.id WHERE referid.val != '-' GROUP BY ana_ref.refer ORDER BY SUM(ana_ref.value) DESC');
+    $sth->execute($c_site, $c_date);
+    $ret->{'count'} = {};
+    while (my $cur = $sth->fetchrow_hashref()) {
+      $ret->{'count'}->{$cur->{'val'}} = $cur->{'sum'}; 
+    }
+  } elsif (defined($c_page)) {
+    $ret->{'analysis'} = 'page';
+    $ret->{'page'} = $c_page;
+    $sth = $dbh->prepare('SELECT SUM(ana_ref.value) AS sum, referid.val FROM ana_ref INNER JOIN dirid ON ana_ref.dir = dirid.id AND ana_ref.site = ? INNER JOIN referid ON ana_ref.refer = referid.id WHERE referid.val != '-' AND dirid.val = ? GROUP BY ana_ref.refer ORDER BY SUM(ana_ref.value) DESC');
+    $sth->execute($c_site, $c_page);
+    $ret->{'count'} = {};
+    while (my $cur = $sth->fetchrow_hashref()) {
+      $ret->{'count'}->{$cur->{'val'}} = $cur->{'sum'}; 
+    }
+  } else {
+    $obj_cgi->send_error(400, 'parameter error');
+    exit;
+  }
 } else {
   $obj_cgi->send_error(400, 'parameter error');
   exit;
@@ -67,3 +104,13 @@ print to_json(\%$ret);
 
 exit;
 
+
+CREATE TABLE ana_ref (
+  site             int UNSIGNED NOT NULL                          ,
+  target           DATE         NOT NULL                          ,
+  dir              int UNSIGNED NOT NULL                          ,
+  refer            int UNSIGNED NOT NULL                          ,
+  value            int UNSIGNED NOT NULL                          
+) DEFAULT CHARSET=utf8;
+select sum(ana_ref.value), referid.val from ana_ref inner join dirid on ana_ref.dir = dirid.id and ana_ref.site = 1 and ana_ref.target = '2025-06-10' inner join referid on ana_ref.refer = referid.id where referid.val != '-' group by ana_ref.refer order by sum(ana_ref.value) desc;
+select sum(ana_ref.value), referid.val from ana_ref inner join dirid on ana_ref.dir = dirid.id and ana_ref.site = 1 and ana_ref.target = '2025-06-10' inner join referid on ana_ref.refer = referid.id where referid.val != '-' and dirid.val = '/' group by ana_ref.refer order by sum(ana_ref.value) desc;
