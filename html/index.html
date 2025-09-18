@@ -69,13 +69,13 @@ function exec_query() {
 }
 window.addEventListener('load', () => {
   document.getElementById('cond_exec').addEventListener('click', exec_query);
-  document.getElementById('cond_pageday_dst').addEventListener('change', () => { document.getElementById('cond_pageday').checked = true; });
-  document.getElementById('cond_pageday_ded').addEventListener('change', () => { document.getElementById('cond_pageday').checked = true; });
+  document.getElementById('cond_pageday_date_st').addEventListener('change', () => { document.getElementById('cond_pageday').checked = true; });
+  document.getElementById('cond_pageday_date_ed').addEventListener('change', () => { document.getElementById('cond_pageday').checked = true; });
   document.getElementById('cond_pagename_name').addEventListener('change', () => { document.getElementById('cond_pagename').checked = true; });
-  document.getElementById('cond_refday_dst').addEventListener('change', () => { document.getElementById('cond_refday').checked = true; });
-  document.getElementById('cond_refday_ded').addEventListener('change', () => { document.getElementById('cond_refday').checked = true; });
-  document.getElementById('cond_refpday_dst').addEventListener('change', () => { document.getElementById('cond_refpday').checked = true; });
-  document.getElementById('cond_refpday_ded').addEventListener('change', () => { document.getElementById('cond_refpday').checked = true; });
+  document.getElementById('cond_refday_date_st').addEventListener('change', () => { document.getElementById('cond_refday').checked = true; });
+  document.getElementById('cond_refday_date_ed').addEventListener('change', () => { document.getElementById('cond_refday').checked = true; });
+  document.getElementById('cond_refpday_date_st').addEventListener('change', () => { document.getElementById('cond_refpday').checked = true; });
+  document.getElementById('cond_refpday_date_ed').addEventListener('change', () => { document.getElementById('cond_refpday').checked = true; });
   document.getElementById('cond_refpday_page').addEventListener('change', () => { document.getElementById('cond_refpday').checked = true; });
   document.getElementById('cond_refpage_page').addEventListener('change', () => { document.getElementById('cond_refpage').checked = true; });
   fetch(api_site)
