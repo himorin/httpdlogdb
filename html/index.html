@@ -164,6 +164,8 @@ function exec_query() {
     if (use_page != 0) {
       get_data(api_get, 'site=' + site + '&target=page' + param, show_page);
       document.getElementById('sres_graph').style.display = 'block';
+      document.getElementById('sres_graph_chk').checked = false;
+      document.getElementById('sres_graph_svg').style.display = 'none';
     } else { get_data(api_get, 'site=' + site + '&target=page' + param, show_access); }
   } else if (sel == 'ref') {
     get_data(api_get, 'site=' + site + '&target=ref' + param, show_access);
