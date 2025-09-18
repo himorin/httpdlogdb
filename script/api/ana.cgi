@@ -51,7 +51,7 @@ if ($c_tgt eq 'sns_fb') {
   }
   $query .= ' INSTR(query, "fbclid=") > 0 GROUP BY query, dir';
   $sth = $dbh->prepare($query);
-  $sth->execute(\@params);
+  $sth->execute(@params);
   $ret->{'count'} = {};
   while (my $cur = $sth->fetchrow_hashref()) {
     my $dat = { "sum" => $cur->{'sum'}, "page" => $cur->{'val'} };
