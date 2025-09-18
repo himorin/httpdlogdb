@@ -57,7 +57,7 @@ if ($c_tgt eq 'page') {
     exit;
   }
 } elsif ($c_tgt eq 'ref') {
-  my %c_date = $obj_cgi->param('date');
+  my $c_date = $obj_cgi->param('date');
   my $c_page = $obj_cgi->param('page');
   $ret->{'site'} = $c_site;
   $ret->{'target'} = $c_tgt;
