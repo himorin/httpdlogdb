@@ -49,7 +49,7 @@ function show_pagename_name(name) {
   document.getElementById('cond_pagename').checked = true;
   document.getElementById('cond_pagename_name').value = name;
 }
-function show_ref(res) {
+function show_list(res) {
   let ch = '';
   Object.keys(res['count']).sort((a,b) => {return res['count'][b] - res['count'][a]; }).forEach((item) => {
     ch += '<li>' + res['count'][item] + ': <tt>' + item + '</tt></li>';
@@ -61,23 +61,35 @@ function exec_query() {
   let site = document.getElementById('target_site').value;
   if (sel == 'pageday') { get_data('site=' + site + '&target=page&dst=' + document.getElementById('cond_pageday_date_st').value + '&ded=' + document.getElementById('cond_pageday_date_ed').value, show_page_date); }
   else if (sel == 'pagename') { get_data('site=' + site + '&target=page&page=' + document.getElementById('cond_pagename_name').value, show_page_page); }
-  else if (sel == 'refday') { get_data('site=' + site + '&target=ref&dst=' + document.getElementById('cond_refday_date_st').value + '&ded=' + document.getElementById('cond_refday_date_ed').value, show_ref); }
-  else if (sel == 'refpday') { get_data('site=' + site + '&target=ref&dst=' + document.getElementById('cond_refpday_date_st').value + '&ded=' + document.getElementById('cond_refpday_date_ed').value + '&page=' + document.getElementById('cond_refpday_page').value, show_ref); }
-  else if (sel == 'refpage') { get_data('site=' + site + '&target=ref&page=' + document.getElementById('cond_refpage_page').value, show_ref); }
-  else if (sel == 'uaday') { }
-  else if (sel == 'uapday') { }
+  else if (sel == 'refday') { get_data('site=' + site + '&target=ref&dst=' + document.getElementById('cond_refday_date_st').value + '&ded=' + document.getElementById('cond_refday_date_ed').value, show_list); }
+  else if (sel == 'refpday') { get_data('site=' + site + '&target=ref&dst=' + document.getElementById('cond_refpday_date_st').value + '&ded=' + document.getElementById('cond_refpday_date_ed').value + '&page=' + document.getElementById('cond_refpday_page').value, show_list); }
+  else if (sel == 'refpage') { get_data('site=' + site + '&target=ref&page=' + document.getElementById('cond_refpage_page').value, show_list); }
+  else if (sel == 'uaday') { get_data('site=' + site + '&target=ua&dst=' + document.getElementById('cond_uaday_date_st').value + '&ded=' + document.getElementById('cond_uaday_date_ed').value, show_list); }
+  else if (sel == 'uapday') { get_data('site=' + site + '&target=ua&dst=' + document.getElementById('cond_uapday_date_st').value + '&ded=' + document.getElementById('cond_uapday_date_ed').value + '&page=' + document.getElementById('cond_uapday_page').value, show_list); }
+}
+function check_sted(tgt, put) {
+  let check;
+  let change;
+  if (put == 'st') { check = tgt + '_ed'; change = tgt + '_st'; }
+  else { check = tgt + '_st'; change = tgt + '_ed'; }
+  if (document.getElementById(change).value == '') { document.getElementById(change).value = document.getElementById(check).value; }
 }
 window.addEventListener('load', () => {
   document.getElementById('cond_exec').addEventListener('click', exec_query);
-  document.getElementById('cond_pageday_date_st').addEventListener('change', () => { document.getElementById('cond_pageday').checked = true; });
-  document.getElementById('cond_pageday_date_ed').addEventListener('change', () => { document.getElementById('cond_pageday').checked = true; });
+  document.getElementById('cond_pageday_date_st').addEventListener('change', () => { document.getElementById('cond_pageday').checked = true; check_sted('cond_pageday_date', 'st'); });
+  document.getElementById('cond_pageday_date_ed').addEventListener('change', () => { document.getElementById('cond_pageday').checked = true; check_sted('cond_pageday_date', 'ed'); });
   document.getElementById('cond_pagename_name').addEventListener('change', () => { document.getElementById('cond_pagename').checked = true; });
-  document.getElementById('cond_refday_date_st').addEventListener('change', () => { document.getElementById('cond_refday').checked = true; });
-  document.getElementById('cond_refday_date_ed').addEventListener('change', () => { document.getElementById('cond_refday').checked = true; });
-  document.getElementById('cond_refpday_date_st').addEventListener('change', () => { document.getElementById('cond_refpday').checked = true; });
-  document.getElementById('cond_refpday_date_ed').addEventListener('change', () => { document.getElementById('cond_refpday').checked = true; });
+  document.getElementById('cond_refday_date_st').addEventListener('change', () => { document.getElementById('cond_refday').checked = true; check_sted('cond_refday_date', 'st'); });
+  document.getElementById('cond_refday_date_ed').addEventListener('change', () => { document.getElementById('cond_refday').checked = true; check_sted('cond_refday_date', 'ed'); });
+  document.getElementById('cond_refpday_date_st').addEventListener('change', () => { document.getElementById('cond_refpday').checked = true; check_sted('cond_refpday_date', 'st'); });
+  document.getElementById('cond_refpday_date_ed').addEventListener('change', () => { document.getElementById('cond_refpday').checked = true; check_sted('cond_refpday_date', 'ed'); });
   document.getElementById('cond_refpday_page').addEventListener('change', () => { document.getElementById('cond_refpday').checked = true; });
   document.getElementById('cond_refpage_page').addEventListener('change', () => { document.getElementById('cond_refpage').checked = true; });
+  document.getElementById('cond_uaday_date_st').addEventListener('change', () => { document.getElementById('cond_uaday').checked = true; check_sted('cond_uaday_date', 'st'); });
+  document.getElementById('cond_uaday_date_ed').addEventListener('change', () => { document.getElementById('cond_uaday').checked = true; check_sted('cond_uaday_date', 'ed'); });
+  document.getElementById('cond_uapday_date_st').addEventListener('change', () => { document.getElementById('cond_uapday').checked = true; check_sted('cond_uapday_date', 'st'); });
+  document.getElementById('cond_uapday_date_ed').addEventListener('change', () => { document.getElementById('cond_uapday').checked = true; check_sted('cond_uapday_date', 'ed'); });
+  document.getElementById('cond_uapday_page').addEventListener('change', () => { document.getElementById('cond_uapday').checked = true; });
   fetch(api_site)
   .then((res) => {
     if (res.ok) { return res.json(); }
@@ -105,9 +117,9 @@ window.addEventListener('load', () => {
   このページでは、このサーバに載っているウェブサーバのアクセス解析を提供しています。
   以下の日付選択は<tt><span id="logtz"></span></tt>での0時から24時までのアクセス数を表示します。
   <br>
-  サイトごとのアクセス制限は未実装です。
+  サイトごとの解析結果表示へのアクセス制限は未実装です。
   <br>
-  動的解析は未実装です。
+  以下の固定パラメータ以外の動的解析は未実装です。
 </p>
 <h2>パラメータ設定</h2>
 <div>
@@ -147,10 +159,15 @@ window.addEventListener('load', () => {
       </ul></li>
       <li>ブラウザリスト<ul>
         <li>
-          <input type="radio" name="condition" id="cond_uaday" value="uaday" disabled><label for="cond_uaday">日付ごとのアクセスに利用されたブラウザリスト</label>
+          <input type="radio" name="condition" id="cond_uaday" value="uaday"><label for="cond_uaday">指定期間内にアクセスに利用されたブラウザリスト</label>:
+          <input type="text" id="cond_uaday_date_st" placeholder="YYYY-MM-DD" inputmode="decimal"> ～
+          <input type="text" id="cond_uaday_date_ed" placeholder="YYYY-MM-DD" inputmode="decimal"> ("年-月-日"の形式です)
         </li>
         <li>
-          <input type="radio" name="condition" id="cond_uapday" value="uapday" disabled><label for="cond_uapday">日付とページ名指定でのアクセスに利用されたブラウザリスト</label>
+          <input type="radio" name="condition" id="cond_uapday" value="uapday"><label for="cond_uapday">期間とページ名指定でのアクセスに利用されたブラウザリスト</label>:
+          期間: <input type="text" id="cond_uapday_date_st" placeholder="YYYY-MM-DD" inputmode="decimal"> ～
+          <input type="text" id="cond_uapday_date_ed" placeholder="YYYY-MM-DD" inputmode="decimal"> ("年-月-日"の形式です)
+          / ページ: <input type="text" id="cond_uapday_page" placeholder="/" size="50">
         </li>
       </ul></li>
     </ul>
