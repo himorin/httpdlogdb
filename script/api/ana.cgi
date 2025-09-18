@@ -49,6 +49,7 @@ if ($c_tgt eq 'sns_fb') {
     $ret->{'page'} = $c_page;
   }
   $query += ' INSTR(query, "fbclid=") > 0 GROUP BY query, dir';
+  $sth = $dbh->prepare($query);
   $sth->execute(@params);
   $ret->{'count'} = {};
   while (my $cur = $sth->fetchrow_hashref()) {
