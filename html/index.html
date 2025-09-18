@@ -59,6 +59,20 @@ function show_pagename_name(name) {
   document.getElementById('cond_pagename_name').value = name;
 }
 
+function show_ana_list(res) {
+  let ch = '';
+  Object.keys(res['count']).sort((a,b) => {return res['count'][b]['sum'] - res['count'][a]['sum']; }).forEach((item) => {
+    ch += '<li>' + res['count'][item]['sum'] + ': <tt>' + res['count'][item]['page'] + ' (' + item + ')</tt></li>';
+  })
+  document.getElementById('searchres').innerHTML = ch;
+}
+function show_ana_list(res) {
+  let ch = '';
+  Object.keys(res['count']).sort((a,b) => {return res['count'][b]['sum'] - res['count'][a]['sum']; }).forEach((item) => {
+    ch += '<li>' + res['count'][item]['sum'] + ': <tt>' + item + '</tt></li>';
+  })
+  document.getElementById('searchres').innerHTML = ch;
+}
 function show_list(res) {
   let ch = '';
   Object.keys(res['count']).sort((a,b) => {return res['count'][b] - res['count'][a]; }).forEach((item) => {
@@ -105,9 +119,10 @@ function exec_query() {
   } else if (sel == 'ua') {
     get_data(api_get, 'site=' + site + '&target=ua' + param, show_list);
   } else if (sel == 'sns_fb') {
-    get_ana(api_ana, 'site=' + site + '&target=sns_fb' + param, show_list);
+    if (use_page == 0) { get_data(api_ana, 'site=' + site + '&target=sns_fb' + param, show_ana_list); }
+    else { get_data(api_ana, 'site=' + site + '&target=sns_fb' + param, show_ana_page); }
   } else if (sel == 'sns_x') {
-    get_ana(api_ana, 'site=' + site + '&target=sns_x' + param, show_list);
+    get_data(api_ana, 'site=' + site + '&target=sns_x' + param, show_list);
   }
 }
 function check_sted(tgt, put) {
