@@ -136,6 +136,15 @@ if ($c_tgt eq 'page') {
     while (my $cur = $sth->fetchrow_hashref()) {
       $ret->{'count'}->{$cur->{'val'}} = $cur->{'sum'}; 
     }
+  } elsif (defined($c_page)) {
+    $ret->{'analysis'} = 'ua_page';
+    $ret->{'page'} = $c_page;
+    $sth = $dbh->prepare('SELECT SUM(ana_pagebr.value) AS sum, browserid.val FROM ana_pagebr INNER JOIN browserid ON ana_pagebr.browser = browserid.id AND ana_pagebr.site = ? INNER JOIN dirid ON ana_pagebr.dir = dirid.id WHERE dirid.val = ? GROUP BY ana_pagebr.browser ORDER BY SUM(ana_pagebr.value) DESC');
+    $sth->execute($c_sid, $c_page);
+    $ret->{'count'} = {};
+    while (my $cur = $sth->fetchrow_hashref()) {
+      $ret->{'count'}->{$cur->{'val'}} = $cur->{'sum'}; 
+    }
   } else {
     $obj_cgi->send_error(400, 'parameter error ua');
     exit;
