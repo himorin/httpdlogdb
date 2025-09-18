@@ -110,7 +110,7 @@ function exec_query() {
     document.getElementById('sres_page').innerText = '';
   }
 
-  if ((use_date + use_page == 0) && (sel.substr(0, 4) == 'sns_')) { return; }
+  if ((use_date + use_page == 0) && (sel.substr(0, 4) != 'sns_')) { return; }
   if (sel == 'access') {
     if (use_page != 0) { get_data(api_get, 'site=' + site + '&target=page' + param, show_access); }
     else { get_data(api_get, 'site=' + site + '&target=page' + param, show_list); }
