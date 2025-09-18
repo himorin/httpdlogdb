@@ -53,7 +53,7 @@ if ($c_tgt eq 'page') {
       $ret->{'count'}->{$cur->{'target'}} = $cur->{'value'};
     }
   } else {
-    $obj_cgi->send_error(400, 'parameter error');
+    $obj_cgi->send_error(400, 'parameter error page');
     exit;
   }
 } elsif ($c_tgt eq 'ref') {
@@ -90,11 +90,11 @@ if ($c_tgt eq 'page') {
       $ret->{'count'}->{$cur->{'val'}} = $cur->{'sum'}; 
     }
   } else {
-    $obj_cgi->send_error(400, 'parameter error');
+    $obj_cgi->send_error(400, 'parameter error ref');
     exit;
   }
 } else {
-  $obj_cgi->send_error(400, 'parameter error');
+  $obj_cgi->send_error(400, 'parameter error target');
   exit;
 }
 
