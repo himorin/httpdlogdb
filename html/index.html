@@ -119,8 +119,8 @@ function exec_query() {
   } else if (sel == 'ua') {
     get_data(api_get, 'site=' + site + '&target=ua' + param, show_list);
   } else if (sel == 'sns_fb') {
-    if (use_page == 0) { get_data(api_ana, 'site=' + site + '&target=sns_fb' + param, show_ana_page); }
-    else { get_data(api_ana, 'site=' + site + '&target=sns_fb' + param, show_ana_list); }
+    if (use_page == 0) { get_data(api_ana, 'site=' + site + '&target=sns_fb' + param, show_ana_list); }
+    else { get_data(api_ana, 'site=' + site + '&target=sns_fb' + param, show_ana_page); }
   } else if (sel == 'sns_x') {
     get_data(api_ana, 'site=' + site + '&target=sns_x' + param, show_list);
   }
