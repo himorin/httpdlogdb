@@ -115,6 +115,13 @@ window.addEventListener('load', () => {
   document.getElementById('cond_exec').addEventListener('click', exec_query);
   document.getElementById('cond_date_st').addEventListener('change', () => { check_sted('cond_date', 'st'); });
   document.getElementById('cond_date_ed').addEventListener('change', () => { check_sted('cond_date', 'ed'); });
+  document.getElementById('cond_date').addEventListener('change', (e) => {
+    document.getElementById('cond_date_st').disabled = !e.target.checked;
+    document.getElementById('cond_date_ed').disabled = !e.target.checked;
+  });
+  document.getElementById('cond_page').addEventListener('change', (e) => {
+    document.getElementById('cond_page_name').disabled = !e.target.checked;
+  });
   fetch(api_site)
   .then((res) => {
     if (res.ok) { return res.json(); }
