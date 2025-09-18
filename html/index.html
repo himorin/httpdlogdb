@@ -25,6 +25,14 @@ function get_data(query, callback) {
     // anything?
   });
 }
+function show_access(res) {
+  let ch = '';
+  Object.keys(res['count']).sort((a,b) => {return res['count'][b] - res['count'][a]; }).forEach((item) => {
+    ch += '<li>' + res['count'][item] + ': <tt>' + item + '</tt></li>';
+  })
+  document.getElementById('searchres').innerHTML = ch;
+}
+
 function show_page_date(res) {
   let ch = '';
   Object.keys(res['count']).sort((a,b) => {return res['count'][b] - res['count'][a]; }).forEach((item) => {
@@ -49,6 +57,7 @@ function show_pagename_name(name) {
   document.getElementById('cond_pagename').checked = true;
   document.getElementById('cond_pagename_name').value = name;
 }
+
 function show_list(res) {
   let ch = '';
   Object.keys(res['count']).sort((a,b) => {return res['count'][b] - res['count'][a]; }).forEach((item) => {
@@ -59,13 +68,41 @@ function show_list(res) {
 function exec_query() {
   let sel = document.getElementById('target_set').elements['condition'].value;
   let site = document.getElementById('target_site').value;
-  if (sel == 'pageday') { get_data('site=' + site + '&target=page&dst=' + document.getElementById('cond_pageday_date_st').value + '&ded=' + document.getElementById('cond_pageday_date_ed').value, show_page_date); }
-  else if (sel == 'pagename') { get_data('site=' + site + '&target=page&page=' + document.getElementById('cond_pagename_name').value, show_page_page); }
-  else if (sel == 'refday') { get_data('site=' + site + '&target=ref&dst=' + document.getElementById('cond_refday_date_st').value + '&ded=' + document.getElementById('cond_refday_date_ed').value, show_list); }
-  else if (sel == 'refpday') { get_data('site=' + site + '&target=ref&dst=' + document.getElementById('cond_refpday_date_st').value + '&ded=' + document.getElementById('cond_refpday_date_ed').value + '&page=' + document.getElementById('cond_refpday_page').value, show_list); }
-  else if (sel == 'refpage') { get_data('site=' + site + '&target=ref&page=' + document.getElementById('cond_refpage_page').value, show_list); }
-  else if (sel == 'uaday') { get_data('site=' + site + '&target=ua&dst=' + document.getElementById('cond_uaday_date_st').value + '&ded=' + document.getElementById('cond_uaday_date_ed').value, show_list); }
-  else if (sel == 'uapday') { get_data('site=' + site + '&target=ua&dst=' + document.getElementById('cond_uapday_date_st').value + '&ded=' + document.getElementById('cond_uapday_date_ed').value + '&page=' + document.getElementById('cond_uapday_page').value, show_list); }
+  let param = '';
+  let use_date = 0, use_page = 0;
+  if (document.getElementById('cond_date').checked) {
+    document.getElementById('sres_date_sted').style.display = 'inline';
+    document.getElementById('sres_date_none').style.display = 'none';
+    document.getElementById('sres_date_st').innerText = document.getElementById('cond_date_st').value;
+    document.getElementById('sres_date_ed').innerText = document.getElementById('cond_date_ed').value;
+    param += '&dst=' + document.getElementById('cond_date_st').value + '&ded=' + document.getElementById('cond_date_ed').value;
+    use_date = 1;
+  } else {
+    document.getElementById('sres_date_sted').style.display = 'none';
+    document.getElementById('sres_date_none').style.display = 'inline';
+    document.getElementById('sres_date_st').innerText = '';
+    document.getElementById('sres_date_ed').innerText = '';
+  }
+  if (document.getElementById('cond_page').checked) {
+    document.getElementById('sres_page').style.display = 'inline';
+    document.getElementById('sres_page_none').style.display = 'none';
+    document.getElementById('sres_page').innerText = document.getElementById('cond_page_name').value;
+    param += '&page=' + document.getElementById('cond_page_name').value;
+    use_page = 1;
+  } else {
+    document.getElementById('sres_page').style.display = 'none';
+    document.getElementById('sres_page_none').style.display = 'inline';
+    document.getElementById('sres_page').innerText = '';
+  }
+
+  if (use_date + use_page == 0) { return; }
+  if (sel == 'access') {
+    get_data('site=' + site + '&target=page' + param, show_access);
+  } else if (sel == 'ref') {
+    get_data('site=' + site + '&target=ref' + param, show_list);
+  } else if (sel == 'ua') {
+    get_data('site=' + site + '&target=ua' + param, show_list);
+  }
 }
 function check_sted(tgt, put) {
   let check;
@@ -76,20 +113,8 @@ function check_sted(tgt, put) {
 }
 window.addEventListener('load', () => {
   document.getElementById('cond_exec').addEventListener('click', exec_query);
-  document.getElementById('cond_pageday_date_st').addEventListener('change', () => { document.getElementById('cond_pageday').checked = true; check_sted('cond_pageday_date', 'st'); });
-  document.getElementById('cond_pageday_date_ed').addEventListener('change', () => { document.getElementById('cond_pageday').checked = true; check_sted('cond_pageday_date', 'ed'); });
-  document.getElementById('cond_pagename_name').addEventListener('change', () => { document.getElementById('cond_pagename').checked = true; });
-  document.getElementById('cond_refday_date_st').addEventListener('change', () => { document.getElementById('cond_refday').checked = true; check_sted('cond_refday_date', 'st'); });
-  document.getElementById('cond_refday_date_ed').addEventListener('change', () => { document.getElementById('cond_refday').checked = true; check_sted('cond_refday_date', 'ed'); });
-  document.getElementById('cond_refpday_date_st').addEventListener('change', () => { document.getElementById('cond_refpday').checked = true; check_sted('cond_refpday_date', 'st'); });
-  document.getElementById('cond_refpday_date_ed').addEventListener('change', () => { document.getElementById('cond_refpday').checked = true; check_sted('cond_refpday_date', 'ed'); });
-  document.getElementById('cond_refpday_page').addEventListener('change', () => { document.getElementById('cond_refpday').checked = true; });
-  document.getElementById('cond_refpage_page').addEventListener('change', () => { document.getElementById('cond_refpage').checked = true; });
-  document.getElementById('cond_uaday_date_st').addEventListener('change', () => { document.getElementById('cond_uaday').checked = true; check_sted('cond_uaday_date', 'st'); });
-  document.getElementById('cond_uaday_date_ed').addEventListener('change', () => { document.getElementById('cond_uaday').checked = true; check_sted('cond_uaday_date', 'ed'); });
-  document.getElementById('cond_uapday_date_st').addEventListener('change', () => { document.getElementById('cond_uapday').checked = true; check_sted('cond_uapday_date', 'st'); });
-  document.getElementById('cond_uapday_date_ed').addEventListener('change', () => { document.getElementById('cond_uapday').checked = true; check_sted('cond_uapday_date', 'ed'); });
-  document.getElementById('cond_uapday_page').addEventListener('change', () => { document.getElementById('cond_uapday').checked = true; });
+  document.getElementById('cond_date_st').addEventListener('change', () => { check_sted('cond_date', 'st'); });
+  document.getElementById('cond_date_ed').addEventListener('change', () => { check_sted('cond_date', 'ed'); });
   fetch(api_site)
   .then((res) => {
     if (res.ok) { return res.json(); }
@@ -129,46 +154,22 @@ window.addEventListener('load', () => {
   <fieldset>
     <legend>詳細検索設定</legend>
     <ul>
-      <li>アクセス数<ul>
+      <li>
+        <input type="checkbox" id="cond_date"><label for="cond_date">解析対象期間設定を行う (チェックを外した場合はログが存在する全期間が対象となります)</label>:
+        <input type="text" id="cond_date_st" placeholder="YYYY-MM-DD" inputmode="decimal" disabled> ～
+        <input type="text" id="cond_date_ed" placeholder="YYYY-MM-DD" inputmode="decimal" disabled> ("年-月-日"の形式です)
+      </li>
+      <li>
+        <input type="checkbox" id="cond_page"><label for="cond_page">解析対象ページ設定を行う (チェックを外した場合は全ページが対象となります)</label>:
+        <input type="text" id="cond_page_name" placeholder="/" size="50" disabled>
+      </li>
+      <li>解析内容選択<ul>
         <li>
-          <input type="radio" name="condition" id="cond_pageday" value="pageday"><label for="cond_pageday">期間指定でのページアクセス数リスト</label>:
-          <input type="text" id="cond_pageday_date_st" placeholder="YYYY-MM-DD" inputmode="decimal"> ～
-          <input type="text" id="cond_pageday_date_ed" placeholder="YYYY-MM-DD" inputmode="decimal"> ("年-月-日"の形式です)
+          <input type="radio" name="condition" id="cond_ana_access" value="access" checked><label for="cond_ana_access">アクセス数解析</label>
+          (期間とページの両方を指定した場合は、指定期間中の日ごとのアクセス数を表示します。)
         </li>
-        <li>
-          <input type="radio" name="condition" id="cond_pagename" value="pagename"><label for="cond_pagename">ページ名指定での日別アクセス数リスト</label>:
-          <input type="text" id="cond_pagename_name" placeholder="/" size="50"> (日付指定での検索結果のページ一覧からも選択可能です)
-        </li>
-      </ul></li>
-      <li>リンク元リスト<ul>
-        <li>
-          <input type="radio" name="condition" id="cond_refday" value="refday"><label for="cond_refday">期間指定でのリンク元リスト</label>:
-          <input type="text" id="cond_refday_date_st" placeholder="YYYY-MM-DD" inputmode="decimal"> ～
-          <input type="text" id="cond_refday_date_ed" placeholder="YYYY-MM-DD" inputmode="decimal"> ("年-月-日"の形式です)
-        </li>
-        <li>
-          <input type="radio" name="condition" id="cond_refpday" value="refpday"><label for="cond_refpday">期間とページ名指定でのリンク元リスト</label>:
-          期間: <input type="text" id="cond_refpday_date_st" placeholder="YYYY-MM-DD" inputmode="decimal"> ～
-          <input type="text" id="cond_refpday_date_ed" placeholder="YYYY-MM-DD" inputmode="decimal"> ("年-月-日"の形式です)
-          / ページ: <input type="text" id="cond_refpday_page" placeholder="/" size="50">
-        </li>
-        <li>
-          <input type="radio" name="condition" id="cond_refpage" value="refpage"><label for="cond_refpage">ページ名指定でのリンク元リスト</label>:
-          <input type="text" id="cond_refpage_page" placeholder="/" size="50"> (注: ログがある全期間の集計が表示されます)
-        </li>
-      </ul></li>
-      <li>ブラウザリスト<ul>
-        <li>
-          <input type="radio" name="condition" id="cond_uaday" value="uaday"><label for="cond_uaday">指定期間内にアクセスに利用されたブラウザリスト</label>:
-          <input type="text" id="cond_uaday_date_st" placeholder="YYYY-MM-DD" inputmode="decimal"> ～
-          <input type="text" id="cond_uaday_date_ed" placeholder="YYYY-MM-DD" inputmode="decimal"> ("年-月-日"の形式です)
-        </li>
-        <li>
-          <input type="radio" name="condition" id="cond_uapday" value="uapday"><label for="cond_uapday">期間とページ名指定でのアクセスに利用されたブラウザリスト</label>:
-          期間: <input type="text" id="cond_uapday_date_st" placeholder="YYYY-MM-DD" inputmode="decimal"> ～
-          <input type="text" id="cond_uapday_date_ed" placeholder="YYYY-MM-DD" inputmode="decimal"> ("年-月-日"の形式です)
-          / ページ: <input type="text" id="cond_uapday_page" placeholder="/" size="50">
-        </li>
+        <li><input type="radio" name="condition" id="cond_ana_ref" value="ref"><label for="cond_ana_ref">リンク元解析</label></li>
+        <li><input type="radio" name="condition" id="cond_ana_ua" value="ua"><label for="cond_ana_ua">ブラウザ解析</label></li>
       </ul></li>
     </ul>
   </fieldset>
@@ -178,13 +179,13 @@ window.addEventListener('load', () => {
 <h2>検索結果</h2>
 <ul>
   <li>ターゲットサイト: <span id="sres_site"></span></li>
-  <li>検索条件: <span id="sres_cond"></span></li>
+  <li>期間指定: <span id="sres_date_sted" style="display: none;"><span id="sres_date_st"></span> 〜 <span id="sres_date_ed"></span></span><span id="sres_date_none">期間未指定</span></li>
+  <li>ページ指定: <span id="sres_page" style="display: none;"></span><span id="sres_page_none">ページ未指定</span></li>
 </ul>
 <h3>結果リスト</h3>
 <p>
-  表示ボタンを押しても以下に何も表示されないもしくは更新されない場合は検索設定に誤りがある可能性があります。<br>
-  結果表示内の下線付き部分をクリックした場合、日付については日付指定でのページアクセス数リスト、ページ名についてはページ名指定での日別アクセス数リストに遷移します。
+  表示ボタンを押しても以下に何も表示されないもしくは更新されない場合は検索設定に誤りがある可能性があります。
 </p>
 <ul id="searchres"></ul>
 </body>
-</htad>
+</html>

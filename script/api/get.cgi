@@ -35,7 +35,18 @@ if ($c_tgt eq 'page') {
   my $c_page = $obj_cgi->param('page');
   $ret->{'site'} = $c_site;
   $ret->{'target'} = $c_tgt;
-  if (defined($c_dst) && defined($c_ded)) {
+  if (defined($c_dst) && defined($c_ded) && defined($c_page)) {
+    $ret->{'analysis'} = 'page_date_page';
+    $ret->{'dst'} = $c_dst;
+    $ret->{'ded'} = $c_ded;
+    $ret->{'page'} = $c_page;
+    $sth = $dbh->prepare('SELECT SUM(ana_page.value) AS sum, ana_page.target FROM ana_page INNER JOIN dirid ON ana_page.dir = dirid.id AND ana_page.site = ? AND ana_page.target >= ? AND ana_page.target <= ? AND dirid.val = ? GROUP BY ana_page.target ORDER BY sum DESC');
+    $sth->execute($c_sid, $c_dst, $c_ded, $c_page);
+    $ret->{'count'} = {};
+    while (my $cur = $sth->fetchrow_hashref()) {
+      $ret->{'count'}->{$cur->{'val'}} = $cur->{'sum'};
+    }
+  } elsif (defined($c_dst) && defined($c_ded)) {
     $ret->{'analysis'} = 'page_date';
     $ret->{'dst'} = $c_dst;
     $ret->{'ded'} = $c_ded;
