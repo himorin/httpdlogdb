@@ -39,17 +39,17 @@ if ($c_tgt eq 'sns_fb') {
   my $params = ($c_sid);
   my $query = 'SELECT COUNT(atime) AS sum, query, dirid.val FROM rawlog INNER JOIN dirid ON rawlog.dir = dirid.id WHERE site = ? AND ';
   if (defined($c_dst) && defined($c_ded)) {
-    $query += ' atime >= ? AND atime <= ? AND ';
+    $query .= ' atime >= ? AND atime <= ? AND ';
     push(@$params, $c_dst, $c_ded);
     $ret->{'dst'} = $c_dst;
     $ret->{'ded'} = $c_ded;
   }
   if (defined($c_page)) {
-    $query += ' dirid.val = ? AND ';
+    $query .= ' dirid.val = ? AND ';
     push(@$params, $c_page);
     $ret->{'page'} = $c_page;
   }
-  $query += ' INSTR(query, "fbclid=") > 0 GROUP BY query, dir';
+  $query .= ' INSTR(query, "fbclid=") > 0 GROUP BY query, dir';
   $sth = $dbh->prepare($query);
   $sth->execute($params);
   $ret->{'count'} = {};
