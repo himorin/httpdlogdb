@@ -97,6 +97,8 @@ function show_ana_page(res) {
   })
   document.getElementById('searchres').innerHTML = ch;
 }
+function show_graph() {
+}
 function exec_query() {
   let sel = document.getElementById('target_set').elements['condition'].value;
   let site = document.getElementById('target_site').value;
@@ -127,11 +129,14 @@ function exec_query() {
     document.getElementById('sres_page').innerText = '';
   }
   document.getElementById('sres_sns_page').style.display = 'none';
+  document.getElementById('sres_graph').style.display = 'none';
 
   if ((use_date + use_page == 0) && (sel.substr(0, 4) != 'sns_')) { return; }
   if (sel == 'access') {
-    if (use_page != 0) { get_data(api_get, 'site=' + site + '&target=page' + param, show_page); }
-    else { get_data(api_get, 'site=' + site + '&target=page' + param, show_access); }
+    if (use_page != 0) {
+      get_data(api_get, 'site=' + site + '&target=page' + param, show_page);
+      document.getElementById('sres_graph').style.display = 'block';
+    } else { get_data(api_get, 'site=' + site + '&target=page' + param, show_access); }
   } else if (sel == 'ref') {
     get_data(api_get, 'site=' + site + '&target=ref' + param, show_access);
   } else if (sel == 'ua') {
@@ -167,6 +172,7 @@ window.addEventListener('load', () => {
     document.getElementById('cond_page_name').disabled = !e.target.checked;
   });
   document.getElementById('sres_sns_page_chk').addEventListener('change', () => { show_ana_list(last_res); });
+  document.getElementById('sres_graph_chk').addEventListener('change', () => { show_graph(); });
   fetch(api_site)
   .then((res) => {
     if (res.ok) { return res.json(); }
@@ -258,6 +264,10 @@ window.addEventListener('load', () => {
 </p>
 <p id="sres_sns_page" style="display: none;">
   <input type="checkbox" id="sres_sns_page_chk"><label for="sres_sns_page_chk">ターゲットとなったページごとにまとめて表示する</label>
+</p>
+<p id="sres_graph" style="display: none;">
+  <input type="checkbox" id="sres_graph_chk"><label for="sres_graph_chk">グラフ表示</label>
+  <svg id="sres_graph_svg" width="90vw" height="250px" style="display: none; margin: 5vw 1em;"></svg>
 </p>
 <ul id="searchres"></ul>
 </body>
