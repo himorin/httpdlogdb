@@ -73,7 +73,7 @@ if ($c_tgt eq 'sns_fb') {
     push(@params, $c_page);
     $ret->{'page'} = $c_page;
   }
-  $query .= ' GROUP BY referid.id, rawlog.dir;';
+  $query .= ' GROUP BY referid.id, rawlog.dir';
   $sth = $dbh->prepare($query);
   $sth->execute(@params);
   $ret->{'count'} = {};
