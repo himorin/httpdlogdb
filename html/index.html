@@ -15,6 +15,7 @@ const api_get = 'api/get.cgi';
 const api_ana = 'api/ana.cgi';
 let site_list = [];
 let site_tz = '';
+let last_res;
 function get_data(api, query, callback) {
   document.getElementById('sres_fetch').style.display = 'block';
   document.getElementById('sres_fetch_fin').style.display = 'none';
@@ -25,6 +26,7 @@ function get_data(api, query, callback) {
     else { throw Error('failed to fetch data'); }
   }).then((res) => {
     document.getElementById('sres_fetch_fin').style.display = 'inline';
+    last_res = res;
     callback(res);
   }).catch((e) => {
     document.getElementById('sres_fetch_err').style.display = 'inline';
@@ -62,9 +64,30 @@ function show_list(res) {
 }
 function show_ana_list(res) {
   let ch = '';
-  Object.keys(res['count']).sort((a,b) => {return res['count'][b]['sum'] - res['count'][a]['sum']; }).forEach((item) => {
-    ch += '<li>' + res['count'][item]['sum'] + ': <tt>' + dcURI(res['count'][item]['page']) + ' (' + item + ')</tt></li>';
-  })
+  if (document.getElementById('sres_sns_page_chk').checked) {
+    let reconst = {};
+    Object.keys(res['count']).forEach((item) => {
+      if (res['count'][item]['page'] in reconst) {
+        reconst[res['count'][item]['page']]['count'] += res['count'][item]['sum'];
+      } else {
+        reconst[res['count'][item]['page']] = { 'count': res['count'][item]['sum'], 'items': {} };
+      }
+      reconst[res['count'][item]['page']]['items'][item] = res['count'][item]['sum'];
+    });
+    let culid = 0;
+    Object.keys(reconst).sort((a,b) => {return reconst[b]['count'] - reconst[a]['count']; }).forEach((page) => {
+      ch += '<li>' + reconst[page]['count'] + ': <tt>' + dcURI(page) + '</tt> <a onclick="document.getElementById(\'sres_closeul_' + culid + '\'').style.display = \'block\'';">open</a><ul id="sres_closeul_' + culid + '" style="display:none;">';
+      Object.keys(reconst[page]['items']).sort((a,b) => {return reconst[page]['items'][b]['sum'] - reconst[page]['items'][a]['sum']; }).forEach((item) => {
+        ch += '<li>' + reconst[page]['items'][item] + ': <tt>' + item + '</tt></li>';
+      })
+      ch += '</ul></li>';
+      culid++;
+    })
+  } else {
+    Object.keys(res['count']).sort((a,b) => {return res['count'][b]['sum'] - res['count'][a]['sum']; }).forEach((item) => {
+      ch += '<li>' + res['count'][item]['sum'] + ': <tt>' + dcURI(res['count'][item]['page']) + ' (' + item + ')</tt></li>';
+    })
+  }
   document.getElementById('searchres').innerHTML = ch;
 }
 function show_ana_page(res) {
@@ -103,6 +126,7 @@ function exec_query() {
     document.getElementById('sres_page_none').style.display = 'inline';
     document.getElementById('sres_page').innerText = '';
   }
+  document.getElementById('sres_sns_page').style.display = 'none';
 
   if ((use_date + use_page == 0) && (sel.substr(0, 4) != 'sns_')) { return; }
   if (sel == 'access') {
@@ -113,11 +137,15 @@ function exec_query() {
   } else if (sel == 'ua') {
     get_data(api_get, 'site=' + site + '&target=ua' + param, show_list);
   } else if (sel == 'sns_fb') {
-    if (use_page == 0) { get_data(api_ana, 'site=' + site + '&target=sns_fb' + param, show_ana_list); }
-    else { get_data(api_ana, 'site=' + site + '&target=sns_fb' + param, show_ana_page); }
+    if (use_page == 0) {
+      get_data(api_ana, 'site=' + site + '&target=sns_fb' + param, show_ana_list);
+      document.getElementById('sres_sns_page').style.display = 'block';
+    } else { get_data(api_ana, 'site=' + site + '&target=sns_fb' + param, show_ana_page); }
   } else if (sel == 'sns_x') {
-    if (use_page == 0) { get_data(api_ana, 'site=' + site + '&target=sns_x' + param, show_ana_list); }
-    else { get_data(api_ana, 'site=' + site + '&target=sns_x' + param, show_ana_page); }
+    if (use_page == 0) {
+      get_data(api_ana, 'site=' + site + '&target=sns_x' + param, show_ana_list);
+      document.getElementById('sres_sns_page').style.display = 'block';
+    } else { get_data(api_ana, 'site=' + site + '&target=sns_x' + param, show_ana_page); }
   }
 }
 function check_sted(tgt, put) {
@@ -138,6 +166,7 @@ window.addEventListener('load', () => {
   document.getElementById('cond_page').addEventListener('change', (e) => {
     document.getElementById('cond_page_name').disabled = !e.target.checked;
   });
+  document.getElementById('sres_sns_page_chk').addEventListener('change', () => { show_ana_list(last_res); });
   fetch(api_site)
   .then((res) => {
     if (res.ok) { return res.json(); }
@@ -226,6 +255,9 @@ window.addEventListener('load', () => {
 </p>
 <p>
   表示ボタンを押しても以下に何も表示されないもしくは更新されない場合は検索設定に誤りがある可能性があります。
+</p>
+<p id="sres_sns_page" style="display: none;">
+  <input type="checkbox" id="sres_sns_page_chk"><label for="sres_sns_page_chk">ターゲットとなったページごとにまとめて表示する</label>
 </p>
 <ul id="searchres"></ul>
 </body>
