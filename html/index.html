@@ -69,10 +69,10 @@ function exec_query() {
 }
 function check_sted(tgt, put) {
   let check;
-  let change;
-  if (put == 'st') { check = tgt + '_ed'; change = tgt + '_st'; }
-  else { check = tgt + '_st'; change = tgt + '_ed'; }
-  if (document.getElementById(change).value == '') { document.getElementById(change).value = document.getElementById(check).value; }
+  let orig;
+  if (put == 'st') { check = tgt + '_ed'; orig = tgt + '_st'; }
+  else { check = tgt + '_st'; orig = tgt + '_ed'; }
+  if (document.getElementById(check).value == '') { document.getElementById(check).value = document.getElementById(orig).value; }
 }
 window.addEventListener('load', () => {
   document.getElementById('cond_exec').addEventListener('click', exec_query);
