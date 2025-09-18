@@ -49,13 +49,21 @@ function show_pagename_name(name) {
   document.getElementById('cond_pagename').checked = true;
   document.getElementById('cond_pagename_name').value = name;
 }
+function show_ref(res) {
+  let ch = '';
+  Object.keys(res['count']).sort((a,b) => {return res['count'][b] - res['count'][a]; }).forEach((item) => {
+    ch += '<li>' + item + ': <tt>' + res['count'][item] + '</tt></li>';
+  })
+  document.getElementById('searchres').innerHTML = ch;
+}
 function exec_query() {
   let sel = document.getElementById('target_set').elements['condition'].value;
   let site = document.getElementById('target_site').value;
   if (sel == 'pageday') { get_data('site=' + site + '&target=page&date=' + document.getElementById('cond_pageday_date').value, show_page_date); }
   else if (sel == 'pagename') { get_data('site=' + site + '&target=page&page=' + document.getElementById('cond_pagename_name').value, show_page_page); }
-  else if (sel == 'refday') { }
-  else if (sel == 'refpday') { }
+  else if (sel == 'refday') { get_data('site=' + site + '&target=ref&date=' + document.getElementById('cond_refday_date').value, show_ref); }
+  else if (sel == 'refpday') { get_data('site=' + site + '&target=ref&date=' + document.getElementById('cond_refpday_date').value + '&page=' + document.getElementById('cond_refpday_page').value, show_ref); }
+  else if (sel == 'refpage') { get_data('site=' + site + '&target=ref&page=' + document.getElementById('cond_refpage_page').value, show_ref); }
   else if (sel == 'uaday') { }
   else if (sel == 'uapday') { }
 }
@@ -114,13 +122,17 @@ window.addEventListener('load', () => {
       </ul></li>
       <li>リンク元リスト<ul>
         <li>
-          <input type="radio" name="condition" id="cond_refday" value="refday" disabled><label for="cond_refday">日付指定でのリンク元リスト</label>
+          <input type="radio" name="condition" id="cond_refday" value="refday"><label for="cond_refday">日付指定でのリンク元リスト</label>:
+          <input type="text" id="cond_refday_date" placeholder="YYYY-MM-DD" inputmode="decimal"> ("年-月-日"の形式です)
         </li>
         <li>
-          <input type="radio" name="condition" id="cond_refpday" value="refpday" disabled><label for="cond_refpday">日付とページ名指定でのリンク元リスト</label>
+          <input type="radio" name="condition" id="cond_refpday" value="refpday"><label for="cond_refpday">日付とページ名指定でのリンク元リスト</label>:
+          日付: <input type="text" id="cond_refpday_date" placeholder="YYYY-MM-DD" inputmode="decimal"> ("年-月-日"の形式です)
+          / ページ: <input type="text" id="cond_refpday_page" placeholder="/" size="50">
         </li>
         <li>
-          <input type="radio" name="condition" id="cond_refpage" value="refpage" disabled><label for="cond_refpage">ページ名指定でのリンク元リスト</label>
+          <input type="radio" name="condition" id="cond_refpage" value="refpage"><label for="cond_refpage">ページ名指定でのリンク元リスト</label>:
+          <input type="text" id="cond_refpage_page" placeholder="/" size="50">
         </li>
       </ul></li>
       <li>ブラウザリスト<ul>
