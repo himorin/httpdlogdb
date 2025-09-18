@@ -61,7 +61,7 @@ if ($c_tgt eq 'sns_fb') {
   $ret->{'site'} = $c_site;
   $ret->{'target'} = $c_tgt;
   my @params = ($c_sid);
-  my $query = 'SELECT referid.val AS refer, dirid.val AS dir, COUNT(*) AS sum FROM referid INNER JOIN rawlog ON INSTR(referid.val, "https://t.co") > 0 AND referid.id = rawlog.dir INNER JOIN dirid ON rawlog.dir = dirid.id ';
+  my $query = 'SELECT referid.val AS refer, dirid.val AS dir, COUNT(*) AS sum FROM referid INNER JOIN rawlog ON INSTR(referid.val, "https://t.co") > 0 AND referid.id = rawlog.dir INNER JOIN dirid ON rawlog.dir = dirid.id WHERE ';
   if (defined($c_dst) && defined($c_ded)) {
     $query .= ' rawlog.atime >= ? AND rawlog.atime <= ? AND ';
     push(@params, ($c_dst, $c_ded));
@@ -73,7 +73,7 @@ if ($c_tgt eq 'sns_fb') {
     push(@params, $c_page);
     $ret->{'page'} = $c_page;
   }
-  $query .= ' GROUP BY referid.id, rawlog.dir';
+  $query .= ' rawlog.site = ? GROUP BY referid.id, rawlog.dir';
   $sth = $dbh->prepare($query);
   $sth->execute(@params);
   $ret->{'count'} = {};
