@@ -12,10 +12,11 @@
 <!--
 const api_site = 'api/site.cgi';
 const api_get = 'api/get.cgi';
+const api_ana = 'api/ana.cgi';
 let site_list = [];
 let site_tz = '';
-function get_data(query, callback) {
-  fetch(api_get + '?' + query)
+function get_data(api, query, callback) {
+  fetch(api + '?' + query)
   .then((res) => {
     if (res.ok) { return res.json(); }
     else { throw Error('failed to fetch data'); }
@@ -97,11 +98,16 @@ function exec_query() {
 
   if (use_date + use_page == 0) { return; }
   if (sel == 'access') {
-    get_data('site=' + site + '&target=page' + param, show_access);
+    if (use_page != 0) { get_data(api_get, 'site=' + site + '&target=page' + param, show_access); }
+    else { get_data(api_get, 'site=' + site + '&target=page' + param, show_list); }
   } else if (sel == 'ref') {
-    get_data('site=' + site + '&target=ref' + param, show_list);
+    get_data(api_get, 'site=' + site + '&target=ref' + param, show_list);
   } else if (sel == 'ua') {
-    get_data('site=' + site + '&target=ua' + param, show_list);
+    get_data(api_get, 'site=' + site + '&target=ua' + param, show_list);
+  } else if (sel == 'sns_fb') {
+    get_ana(api_ana, 'site=' + site + '&target=sns_fb' + param, show_list);
+  } else if (sel == 'sns_x') {
+    get_ana(api_ana, 'site=' + site + '&target=sns_x' + param, show_list);
   }
 }
 function check_sted(tgt, put) {
@@ -173,10 +179,23 @@ window.addEventListener('load', () => {
       <li>解析内容選択<ul>
         <li>
           <input type="radio" name="condition" id="cond_ana_access" value="access" checked><label for="cond_ana_access">アクセス数解析</label>
-          (期間とページの両方を指定した場合は、指定期間中の日ごとのアクセス数を表示します。)
+          (期間とページの両方を指定した場合は、指定期間中の日ごとのアクセス数を表示します)
         </li>
-        <li><input type="radio" name="condition" id="cond_ana_ref" value="ref"><label for="cond_ana_ref">リンク元解析</label></li>
+        <li>
+          <input type="radio" name="condition" id="cond_ana_ref" value="ref"><label for="cond_ana_ref">リンク元解析</label>
+          (アクセス元にはサイト内でのページ遷移も含み、画像などのリソースが解析対象に含まれる場合はリソースを読み込むページも含まれます)
+        </li>
         <li><input type="radio" name="condition" id="cond_ana_ua" value="ua"><label for="cond_ana_ua">ブラウザ解析</label></li>
+        <li>SNSからの流入解析 (生ログを解析するため結果表示に時間がかかる場合があります。また、流入元ポストの特定は各SNSサービスとの連携が必要となるためこのシステムでは対象外です)<ul>
+          <li>
+            <input type="radio" name="condition" id="cond_sns_fb" value="sns_fb"><label for="cond_sns_fb">Facebook</label>
+            (fbclidがついたアクセスを集計します)
+          </li>
+          <li>
+            <input type="radio" name="condition" id="cond_sns_x" value="sns_x"><label for="cond_sns_x">X (Twitter)</label>
+            (t.co経由のアクセスを集計します)
+          </li>
+        </ul></li>
       </ul></li>
     </ul>
   </fieldset>
