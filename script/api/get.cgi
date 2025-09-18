@@ -44,7 +44,7 @@ if ($c_tgt eq 'page') {
     $sth->execute($c_sid, $c_dst, $c_ded, $c_page);
     $ret->{'count'} = {};
     while (my $cur = $sth->fetchrow_hashref()) {
-      $ret->{'count'}->{$cur->{'val'}} = $cur->{'sum'};
+      $ret->{'count'}->{$cur->{'target'}} = $cur->{'sum'};
     }
   } elsif (defined($c_dst) && defined($c_ded)) {
     $ret->{'analysis'} = 'page_date';
