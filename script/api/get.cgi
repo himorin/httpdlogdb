@@ -103,14 +103,3 @@ print $obj_cgi->header(200);
 print to_json(\%$ret);
 
 exit;
-
-
-CREATE TABLE ana_ref (
-  site             int UNSIGNED NOT NULL                          ,
-  target           DATE         NOT NULL                          ,
-  dir              int UNSIGNED NOT NULL                          ,
-  refer            int UNSIGNED NOT NULL                          ,
-  value            int UNSIGNED NOT NULL                          
-) DEFAULT CHARSET=utf8;
-select sum(ana_ref.value), referid.val from ana_ref inner join dirid on ana_ref.dir = dirid.id and ana_ref.site = 1 and ana_ref.target = '2025-06-10' inner join referid on ana_ref.refer = referid.id where referid.val != '-' group by ana_ref.refer order by sum(ana_ref.value) desc;
-select sum(ana_ref.value), referid.val from ana_ref inner join dirid on ana_ref.dir = dirid.id and ana_ref.site = 1 and ana_ref.target = '2025-06-10' inner join referid on ana_ref.refer = referid.id where referid.val != '-' and dirid.val = '/' group by ana_ref.refer order by sum(ana_ref.value) desc;
