@@ -76,8 +76,8 @@ function show_ana_list(res) {
     });
     let culid = 0;
     Object.keys(reconst).sort((a,b) => {return reconst[b]['count'] - reconst[a]['count']; }).forEach((page) => {
-      ch += '<li>' + reconst[page]['count'] + ': <tt>' + dcURI(page) + '</tt> <a onclick="document.getElementById(\'sres_closeul_' + culid + '\').style.display = \'block\';">open</a><ul id="sres_closeul_' + culid + '" style="display:none;">';
-      Object.keys(reconst[page]['items']).sort((a,b) => {return reconst[page]['items'][b]['sum'] - reconst[page]['items'][a]['sum']; }).forEach((item) => {
+      ch += '<li>' + reconst[page]['count'] + ': <tt>' + dcURI(page) + '</tt> <a onclick="document.getElementById(\'sres_closeul_' + culid + '\').style.display = \'block\';">(open list)</a><ul id="sres_closeul_' + culid + '" style="display:none;">';
+      Object.keys(reconst[page]['items']).sort((a,b) => {return reconst[page]['items'][b] - reconst[page]['items'][a]; }).forEach((item) => {
         ch += '<li>' + reconst[page]['items'][item] + ': <tt>' + item + '</tt></li>';
       })
       ch += '</ul></li>';
