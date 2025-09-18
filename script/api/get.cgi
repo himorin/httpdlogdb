@@ -30,15 +30,17 @@ my $c_sid = $tmp->{'id'};
 my $ret;
 
 if ($c_tgt eq 'page') {
-  my $c_date = $obj_cgi->param('date');
+  my $c_dst = $obj_cgi->param('dst');
+  my $c_ded = $obj_cgi->param('ded');
   my $c_page = $obj_cgi->param('page');
   $ret->{'site'} = $c_site;
   $ret->{'target'} = $c_tgt;
-  if (defined($c_date)) {
+  if (defined($c_dst) && defined($c_ded)) {
     $ret->{'analysis'} = 'date';
-    $ret->{'date'} = $c_date;
-    $sth = $dbh->prepare('SELECT * FROM ana_page INNER JOIN dirid ON ana_page.dir = dirid.id AND ana_page.site = ? AND ana_page.target = ? ORDER BY value DESC');
-    $sth->execute($c_sid, $c_date);
+    $ret->{'dst'} = $c_dst;
+    $ret->{'ded'} = $c_ded;
+    $sth = $dbh->prepare('SELECT * FROM ana_page INNER JOIN dirid ON ana_page.dir = dirid.id AND ana_page.site = ? AND ana_page.target >= ? AND ana_page.target <= ? ORDER BY value DESC');
+    $sth->execute($c_sid, $c_dst, $c_ded);
     $ret->{'count'} = {};
     while (my $cur = $sth->fetchrow_hashref()) {
       $ret->{'count'}->{$cur->{'val'}} = $cur->{'value'};
@@ -57,25 +59,28 @@ if ($c_tgt eq 'page') {
     exit;
   }
 } elsif ($c_tgt eq 'ref') {
-  my $c_date = $obj_cgi->param('date');
+  my $c_dst = $obj_cgi->param('dst');
+  my $c_ded = $obj_cgi->param('ded');
   my $c_page = $obj_cgi->param('page');
   $ret->{'site'} = $c_site;
   $ret->{'target'} = $c_tgt;
-  if (defined($c_date) && defined($c_page)) {
+  if (defined($c_dst) && defined($c_ded) && defined($c_page)) {
     $ret->{'analysis'} = 'date_page';
-    $ret->{'date'} = $c_date;
+    $ret->{'dst'} = $c_dst;
+    $ret->{'ded'} = $c_ded;
     $ret->{'page'} = $c_page;
-    $sth = $dbh->prepare('SELECT SUM(ana_ref.value) AS sum, referid.val FROM ana_ref INNER JOIN dirid ON ana_ref.dir = dirid.id AND ana_ref.site = ? AND ana_ref.target = ? INNER JOIN referid ON ana_ref.refer = referid.id WHERE referid.val != "-" AND dirid.val = ? GROUP BY ana_ref.refer ORDER BY SUM(ana_ref.value) DESC');
-    $sth->execute($c_sid, $c_date, $c_page);
+    $sth = $dbh->prepare('SELECT SUM(ana_ref.value) AS sum, referid.val FROM ana_ref INNER JOIN dirid ON ana_ref.dir = dirid.id AND ana_ref.site = ? AND ana_ref.target >= ? AND ana_ref.target <= ? INNER JOIN referid ON ana_ref.refer = referid.id WHERE referid.val != "-" AND dirid.val = ? GROUP BY ana_ref.refer ORDER BY SUM(ana_ref.value) DESC');
+    $sth->execute($c_sid, $c_dst, $c_ded, $c_page);
     $ret->{'count'} = {};
     while (my $cur = $sth->fetchrow_hashref()) {
       $ret->{'count'}->{$cur->{'val'}} = $cur->{'sum'}; 
     }
-  } elsif (defined($c_date)) {
+  } elsif (defined($c_dst) && defined($c_ded)) {
     $ret->{'analysis'} = 'date';
-    $ret->{'date'} = $c_date;
-    $sth = $dbh->prepare('SELECT SUM(ana_ref.value) AS sum, referid.val FROM ana_ref INNER JOIN dirid ON ana_ref.dir = dirid.id AND ana_ref.site = ? AND ana_ref.target = ? INNER JOIN referid ON ana_ref.refer = referid.id WHERE referid.val != "-" GROUP BY ana_ref.refer ORDER BY SUM(ana_ref.value) DESC');
-    $sth->execute($c_sid, $c_date);
+    $ret->{'dst'} = $c_dst;
+    $ret->{'ded'} = $c_ded;
+    $sth = $dbh->prepare('SELECT SUM(ana_ref.value) AS sum, referid.val FROM ana_ref INNER JOIN dirid ON ana_ref.dir = dirid.id AND ana_ref.site = ? AND ana_ref.target >= ? AND ana_ref.target <= ? INNER JOIN referid ON ana_ref.refer = referid.id WHERE referid.val != "-" GROUP BY ana_ref.refer ORDER BY SUM(ana_ref.value) DESC');
+    $sth->execute($c_sid, $c_dst, $c_ded);
     $ret->{'count'} = {};
     while (my $cur = $sth->fetchrow_hashref()) {
       $ret->{'count'}->{$cur->{'val'}} = $cur->{'sum'}; 
