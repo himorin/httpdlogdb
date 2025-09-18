@@ -30,50 +30,19 @@ function get_data(api, query, callback) {
     document.getElementById('sres_fetch_err').style.display = 'inline';
   });
 }
+function dcURI(s) {
+  let r = s;
+  try {
+    let tmp = decodeURI(s);
+    r = tmp;
+  } catch(e) { // do nothing
+  }
+  return r;
+}
 function show_access(res) {
   let ch = '';
   Object.keys(res['count']).sort((a,b) => {return res['count'][b] - res['count'][a]; }).forEach((item) => {
-    ch += '<li>' + res['count'][item] + ': <tt>' + item + '</tt></li>';
-  })
-  document.getElementById('searchres').innerHTML = ch;
-}
-
-function show_page_date(res) {
-  let ch = '';
-  Object.keys(res['count']).sort((a,b) => {return res['count'][b] - res['count'][a]; }).forEach((item) => {
-    ch += '<li>' + res['count'][item] + ': <tt class="click" onclick="show_pagename_name(\'' + item + '\')">' + item + '</tt></li>';
-  })
-  document.getElementById('searchres').innerHTML = ch;
-}
-function show_page_page(res) {
-  let ch = '';
-  Object.keys(res['count']).sort().reverse().forEach((item) => {
-    ch += '<li><span class="click" onclick="show_pageday_date(\'' + item + '\')">' + item + '</span>: ' + res['count'][item] + '</li>';
-  })
-  document.getElementById('searchres').innerHTML = ch;
-}
-function show_pageday_date(date) {
-  get_data('site=' + document.getElementById('target_site').value + '&target=page&date=' + date, show_page_date);
-  document.getElementById('cond_pageday').checked = true;
-  document.getElementById('cond_pageday_date').value = date;
-}
-function show_pagename_name(name) {
-  get_data('site=' + document.getElementById('target_site').value + '&target=page&page=' + name, show_page_page);
-  document.getElementById('cond_pagename').checked = true;
-  document.getElementById('cond_pagename_name').value = name;
-}
-
-function show_ana_list(res) {
-  let ch = '';
-  Object.keys(res['count']).sort((a,b) => {return res['count'][b]['sum'] - res['count'][a]['sum']; }).forEach((item) => {
-    ch += '<li>' + res['count'][item]['sum'] + ': <tt>' + res['count'][item]['page'] + ' (' + item + ')</tt></li>';
-  })
-  document.getElementById('searchres').innerHTML = ch;
-}
-function show_ana_page(res) {
-  let ch = '';
-  Object.keys(res['count']).sort((a,b) => {return res['count'][b]['sum'] - res['count'][a]['sum']; }).forEach((item) => {
-    ch += '<li>' + res['count'][item]['sum'] + ': <tt>' + item + '</tt></li>';
+    ch += '<li>' + res['count'][item] + ': <tt>' + dcURI(item) + '</tt></li>';
   })
   document.getElementById('searchres').innerHTML = ch;
 }
@@ -81,6 +50,20 @@ function show_list(res) {
   let ch = '';
   Object.keys(res['count']).sort((a,b) => {return res['count'][b] - res['count'][a]; }).forEach((item) => {
     ch += '<li>' + res['count'][item] + ': <tt>' + item + '</tt></li>';
+  })
+  document.getElementById('searchres').innerHTML = ch;
+}
+function show_ana_list(res) {
+  let ch = '';
+  Object.keys(res['count']).sort((a,b) => {return res['count'][b]['sum'] - res['count'][a]['sum']; }).forEach((item) => {
+    ch += '<li>' + res['count'][item]['sum'] + ': <tt>' + dcURI(res['count'][item]['page']) + ' (' + item + ')</tt></li>';
+  })
+  document.getElementById('searchres').innerHTML = ch;
+}
+function show_ana_page(res) {
+  let ch = '';
+  Object.keys(res['count']).sort((a,b) => {return res['count'][b]['sum'] - res['count'][a]['sum']; }).forEach((item) => {
+    ch += '<li>' + res['count'][item]['sum'] + ': <tt>' + item + '</tt></li>';
   })
   document.getElementById('searchres').innerHTML = ch;
 }
@@ -119,7 +102,7 @@ function exec_query() {
     if (use_page != 0) { get_data(api_get, 'site=' + site + '&target=page' + param, show_access); }
     else { get_data(api_get, 'site=' + site + '&target=page' + param, show_list); }
   } else if (sel == 'ref') {
-    get_data(api_get, 'site=' + site + '&target=ref' + param, show_list);
+    get_data(api_get, 'site=' + site + '&target=ref' + param, show_access);
   } else if (sel == 'ua') {
     get_data(api_get, 'site=' + site + '&target=ua' + param, show_list);
   } else if (sel == 'sns_fb') {
