@@ -1,0 +1,19 @@
+{
+  "init": {
+    "url": "login page url"
+  },
+  "login": {
+    "url": "login post",
+    "opt": {
+      "domain_plan": "1",
+      "domain_name_2": "",
+      "domain_name_3": "",
+      "passwd": ""
+    }
+  },
+  "data": {
+    "url": "download post",
+    "referer": "download referer",
+    "opt": "option names"
+  }
+}
