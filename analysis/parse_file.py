@@ -22,15 +22,19 @@ def LoadConfig():
   return site_config
 
 
-if __name__ == "__main__":
+def LoadFile(fname, sitename):
   site_config = LoadConfig()
   o_db = SaveDB()
   o_db.Connect(site_config)
   o_log = LogApache(o_db)
-  if sys.argv[1][-3:] == '.gz':
-    o_log.LoadFileGz(sys.argv[1], sys.argv[2], site_config['log_tz'])
+  if fname[-3:] == '.gz':
+    o_log.LoadFileGz(fname, sitename, site_config['log_tz'])
   else:
-    o_log.LoadFile(sys.argv[1], sys.argv[2], site_config['log_tz'])
+    o_log.LoadFile(fname, sitename, site_config['log_tz'])
   o_db.Close()
 
+if __name__ == "__main__":
+  if len(sys.argv) != 3:
+    raise Exception("Invalid parameter: command <file> <site>")
+  LoadFile(sys.argv[1], sys.argv[2])
 
