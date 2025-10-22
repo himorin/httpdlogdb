@@ -1,0 +1,3 @@
+[
+  { "srv": "<server name>", "date": "%y%m%d", "save": "<save target>" }
+]
