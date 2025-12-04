@@ -27,17 +27,17 @@ class SaveDB:
   debug_start = None
 
   def __init__(self):
-    self._debug = lambda: None
+    self._debug = lambda *args: None
     c_debug = os.getenv('DEBUG')
     if c_debug != None:
       self.debug_level = 1
       self.debug_start = datetime.now().replace(microsecond = 0)
       self._debug = lambda *args: self._print_debugline(*args)
 
-  def _print_debugline(p_str):
+  def _print_debugline(self, p_str):
     c_now = datetime.now().replace(microsecond = 0)
     c_delta = c_now - self.debug_start
-    print("%s (%s): %s".format(c_now.isoformat(), c_delta.total_seconds(), p_str))
+    print("{} ({}s): {}".format(c_now.isoformat(), c_delta.total_seconds(), p_str))
 
   def Connect(self, conf):
     db_dsn = {
