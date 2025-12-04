@@ -1,6 +1,8 @@
 #! /usr/bin/env python3
 
 import sys
+import os
+from datetime import datetime, timedelta
 
 import mysql.connector
 from mysql.connector import errorcode
@@ -18,6 +20,24 @@ class SaveDB:
   ana_page = {}
   ana_ref = {}
   ana_browser = {}
+
+  # debug routines
+  debug_flag = False
+  debug_level = 0
+  debug_start = None
+
+  def __init__(self):
+    self._debug = lambda: None
+    c_debug = os.getenv('DEBUG')
+    if c_debug != None:
+      self.debug_level = 1
+      self.debug_start = datetime.now().replace(microsecond = 0)
+      self._debug = lambda *args: self._print_debugline(*args)
+
+  def _print_debugline(p_str):
+    c_now = datetime.now().replace(microsecond = 0)
+    c_delta = c_now - self.debug_start
+    print("%s (%s): %s".format(c_now.isoformat(), c_delta.total_seconds(), p_str))
 
   def Connect(self, conf):
     db_dsn = {
@@ -37,6 +57,7 @@ class SaveDB:
       else:
         raise Exception('Error occured on DB connection')
       self.cnx = None
+    self._debug("Connected to database")
 
   def _get_new_cursor(self):
     if self.cnx == None:
@@ -140,6 +161,7 @@ class SaveDB:
       self.ana_browser[cid] = 1
 
   def AnaCommit(self):
+    self._debug("Start AnaCommit")
     cursor = self._get_new_cursor()
     # ana_page
     for cid in self.ana_page.keys():
@@ -151,6 +173,7 @@ class SaveDB:
       else:
         cursor.execute('UPDATE ana_page SET value = value + %s WHERE site = %s AND target = %s AND dir = %s', [self.ana_page[cid], cids[0], cids[1], cids[2]])
     self.cnx.commit()
+    self._debug("End ana_page")
 
     # ana_ref
     for cid in self.ana_ref.keys():
@@ -162,6 +185,7 @@ class SaveDB:
       else:
         cursor.execute('UPDATE ana_ref SET value = value + %s WHERE site = %s AND target = %s AND dir = %s AND refer = %s', [self.ana_ref[cid], cids[0], cids[1], cids[2], cids[3]])
     self.cnx.commit()
+    self._debug("End ana_ref")
 
     # ana_browser
     for cid in self.ana_browser.keys():
@@ -173,6 +197,7 @@ class SaveDB:
       else:
         cursor.execute('UPDATE ana_pagebr SET value = value + %s WHERE site = %s AND target = %s AND dir = %s AND browser = %s', [self.ana_browser[cid], cids[0], cids[1], cids[2], cids[3]])
     self.cnx.commit()
+    self._debug("End ana_pagebr")
 
     # cleanup
     self.ana_page = {}
